@@ -1,0 +1,2402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Madinah 2027: Mission Control</title>
+  <!-- Optional Google Fonts with clean system fallbacks for offline/zero-dependency reliability -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <style>
+    /* ==========================================================================
+       DESIGN TOKENS & PALETTE (Madinah-Inspired Emerald, Sandstone & Antique Gold)
+       ========================================================================== */
+    :root {
+      --bg-sandstone: #faf8f5;
+      --bg-sandstone-deep: #f2ede4;
+      --surface-card: #ffffff;
+      --border-stone: #e6dfd3;
+      --border-stone-strong: #d4cab8;
+
+      --emerald-950: #092c29;
+      --emerald-900: #134e4a;
+      --emerald-800: #115e59;
+      --emerald-700: #0f766e;
+      --emerald-100: #ccfbf1;
+      --emerald-50: #f0fdfa;
+
+      --gold-700: #92400e;
+      --gold-600: #b45309;
+      --gold-500: #d97706;
+      --gold-100: #fef3c7;
+      --gold-50: #fffbeb;
+
+      --ink-primary: #1c1917;
+      --ink-secondary: #57534e;
+      --ink-muted: #78716c;
+
+      --success: #15803d;
+      --success-bg: #dcfce7;
+      --warning: #b45309;
+      --warning-bg: #fef3c7;
+
+      --radius-sm: 8px;
+      --radius-md: 14px;
+      --radius-lg: 20px;
+      --radius-pill: 9999px;
+
+      --shadow-card: 0 4px 20px -2px rgba(19, 78, 74, 0.06), 0 1px 3px rgba(28, 25, 23, 0.04);
+      --shadow-elevated: 0 12px 32px -4px rgba(19, 78, 74, 0.14);
+
+      --font-sans: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      --font-arabic: "Amiri", "Traditional Arabic", "Scheherazade New", Georgia, serif;
+    }
+
+    /* ==========================================================================
+       RESET & BASE STYLES
+       ========================================================================== */
+    *, *::before, *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      font-family: var(--font-sans);
+      background-color: var(--bg-sandstone);
+      color: var(--ink-primary);
+      line-height: 1.55;
+      min-height: 100vh;
+      overflow-x: hidden;
+      /* Subtle Islamic star-grid watermark in warm parchment tone */
+      background-image:
+        radial-gradient(circle at 100% 0%, rgba(180, 83, 9, 0.05) 0%, transparent 45%),
+        radial-gradient(circle at 0% 100%, rgba(19, 78, 74, 0.06) 0%, transparent 45%);
+    }
+
+    .arabic {
+      font-family: var(--font-arabic);
+      font-size: 1.22em;
+      font-weight: 700;
+      color: var(--emerald-900);
+      letter-spacing: 0;
+      direction: rtl;
+      display: inline-block;
+      padding: 0 2px;
+    }
+
+    .arabic-hero {
+      font-family: var(--font-arabic);
+      direction: rtl;
+    }
+
+    /* ==========================================================================
+       LAYOUT CONTAINER & HERO HEADER
+       ========================================================================== */
+    .container {
+      width: 100%;
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 16px;
+    }
+
+    @media (min-width: 768px) {
+      .container {
+        padding: 0 24px;
+      }
+    }
+
+    .hero-banner {
+      background: linear-gradient(135deg, var(--emerald-950) 0%, var(--emerald-900) 60%, #175c56 100%);
+      color: #ffffff;
+      padding: 28px 0 36px;
+      border-bottom: 3px solid var(--gold-500);
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* Decorative subtle geometric lattice overlay */
+    .hero-banner::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: 0.07;
+      background-image: url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' stroke='%23ffffff' stroke-width='1'%3E%3Cpath d='M30 0L60 30L30 60L0 30Z'/%3E%3Ccircle cx='30' cy='30' r='12'/%3E%3C/g%3E%3C/svg%3E");
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .hero-top-row {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+    }
+
+    .mission-eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(255, 255, 255, 0.1);
+      border: 1px solid rgba(254, 243, 199, 0.25);
+      color: var(--gold-100);
+      padding: 5px 12px;
+      border-radius: var(--radius-pill);
+      font-size: 0.78rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      margin-bottom: 10px;
+    }
+
+    .hero-title {
+      font-size: clamp(1.65rem, 3.6vw, 2.35rem);
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: #ffffff;
+    }
+
+    .hero-subtitle {
+      margin-top: 8px;
+      color: rgba(255, 255, 255, 0.86);
+      font-size: 0.96rem;
+      max-width: 650px;
+    }
+
+    .hero-intention-pill {
+      margin-top: 10px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.85rem;
+      color: #fde68a;
+      background: rgba(146, 64, 14, 0.28);
+      border: 1px solid rgba(217, 119, 6, 0.4);
+      padding: 6px 14px;
+      border-radius: var(--radius-md);
+    }
+
+    /* Live Countdown Widget */
+    .countdown-box {
+      background: rgba(9, 44, 41, 0.65);
+      backdrop-filter: blur(8px);
+      border: 1px solid rgba(254, 243, 199, 0.22);
+      border-radius: var(--radius-lg);
+      padding: 14px 18px;
+      min-width: 280px;
+      flex: 1 1 auto;
+      max-width: 400px;
+    }
+
+    .countdown-label {
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--gold-100);
+      font-weight: 700;
+      margin-bottom: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .countdown-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      text-align: center;
+    }
+
+    .cd-unit {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: var(--radius-sm);
+      padding: 8px 4px;
+    }
+
+    .cd-num {
+      display: block;
+      font-size: 1.35rem;
+      font-weight: 800;
+      font-variant-numeric: tabular-nums;
+      color: #ffffff;
+      line-height: 1.1;
+    }
+
+    .cd-text {
+      font-size: 0.68rem;
+      text-transform: uppercase;
+      color: rgba(255, 255, 255, 0.72);
+      letter-spacing: 0.04em;
+    }
+
+    /* Quick-Stat KPI Row */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 12px;
+    }
+
+    @media (min-width: 540px) {
+      .kpi-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 960px) {
+      .kpi-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .kpi-card {
+      background: rgba(255, 255, 255, 0.96);
+      color: var(--ink-primary);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      border: 1px solid rgba(255, 255, 255, 0.35);
+      box-shadow: 0 6px 18px rgba(0, 0, 0, 0.14);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 6px;
+    }
+
+    .kpi-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.78rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: var(--ink-secondary);
+    }
+
+    .kpi-value {
+      font-size: 1.55rem;
+      font-weight: 800;
+      color: var(--emerald-900);
+      font-variant-numeric: tabular-nums;
+      line-height: 1.15;
+    }
+
+    .kpi-sub {
+      font-size: 0.8rem;
+      color: var(--ink-muted);
+    }
+
+    .mini-bar {
+      width: 100%;
+      height: 7px;
+      background: var(--bg-sandstone-deep);
+      border-radius: var(--radius-pill);
+      overflow: hidden;
+      margin-top: 2px;
+    }
+
+    .mini-bar-fill {
+      height: 100%;
+      background: linear-gradient(90deg, var(--emerald-800), var(--gold-500));
+      border-radius: var(--radius-pill);
+      transition: width 0.35s ease;
+    }
+
+    /* ==========================================================================
+       STICKY NAVIGATION & DATA PERSISTENCE BAR
+       ========================================================================== */
+    .control-bar {
+      position: sticky;
+      top: 0;
+      z-index: 40;
+      background: rgba(250, 248, 245, 0.94);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--border-stone);
+      padding: 10px 0;
+    }
+
+    .control-bar-inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .nav-tabs {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .tab-btn {
+      appearance: none;
+      border: 1px solid var(--border-stone);
+      background: var(--surface-card);
+      color: var(--ink-secondary);
+      font-family: inherit;
+      font-size: 0.84rem;
+      font-weight: 600;
+      padding: 9px 14px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      min-height: 40px;
+      transition: all 0.2s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .tab-btn:hover {
+      border-color: var(--emerald-800);
+      color: var(--emerald-900);
+    }
+
+    .tab-btn.active {
+      background: var(--emerald-900);
+      border-color: var(--emerald-900);
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(19, 78, 74, 0.22);
+    }
+
+    .persistence-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .save-badge {
+      font-size: 0.76rem;
+      color: var(--emerald-800);
+      background: var(--emerald-50);
+      border: 1px solid var(--emerald-100);
+      padding: 5px 10px;
+      border-radius: var(--radius-pill);
+      font-weight: 600;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .save-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--success);
+    }
+
+    .action-btn {
+      appearance: none;
+      border: 1px solid var(--border-stone-strong);
+      background: var(--surface-card);
+      color: var(--ink-primary);
+      font-family: inherit;
+      font-size: 0.8rem;
+      font-weight: 600;
+      padding: 8px 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      min-height: 38px;
+      transition: all 0.18s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .action-btn:hover {
+      background: var(--bg-sandstone-deep);
+    }
+
+    .action-btn.danger:hover {
+      background: #fef2f2;
+      border-color: #fca5a5;
+      color: #b91c1c;
+    }
+
+    /* ==========================================================================
+       MAIN CONTENT & CARDS
+       ========================================================================== */
+    main {
+      padding: 24px 0 56px;
+      display: flex;
+      flex-direction: column;
+      gap: 28px;
+    }
+
+    .module-section {
+      display: block;
+    }
+
+    .module-section.hidden {
+      display: none;
+    }
+
+    .section-heading {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: flex-end;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    .section-title-group h2 {
+      font-size: 1.32rem;
+      font-weight: 800;
+      color: var(--emerald-950);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-title-group p {
+      font-size: 0.9rem;
+      color: var(--ink-secondary);
+      margin-top: 2px;
+    }
+
+    .card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-stone);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      box-shadow: var(--shadow-card);
+    }
+
+    @media (min-width: 768px) {
+      .card {
+        padding: 24px;
+      }
+    }
+
+    .card-header {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--bg-sandstone-deep);
+    }
+
+    .card-title {
+      font-size: 1.06rem;
+      font-weight: 700;
+      color: var(--emerald-900);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .pill-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 0.76rem;
+      font-weight: 700;
+      padding: 4px 11px;
+      border-radius: var(--radius-pill);
+      background: var(--gold-100);
+      color: var(--gold-700);
+      border: 1px solid rgba(180, 83, 9, 0.2);
+    }
+
+    .pill-badge.emerald {
+      background: var(--emerald-50);
+      color: var(--emerald-900);
+      border-color: var(--emerald-100);
+    }
+
+    /* ==========================================================================
+       MODULE 1: TUHFAT AL-ATFAL & 9-MONTH PREP TRACKER
+       ========================================================================== */
+    .tuhfah-controls {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .counter-btn-group {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .step-btn {
+      appearance: none;
+      border: 1px solid var(--border-stone-strong);
+      background: var(--bg-sandstone);
+      color: var(--emerald-950);
+      font-family: inherit;
+      font-weight: 700;
+      font-size: 0.88rem;
+      min-width: 44px;
+      min-height: 44px;
+      padding: 0 12px;
+      border-radius: var(--radius-sm);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .step-btn:hover {
+      background: var(--emerald-900);
+      color: #ffffff;
+      border-color: var(--emerald-900);
+    }
+
+    .range-wrapper {
+      flex: 1 1 240px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    input[type="range"] {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 100%;
+      height: 10px;
+      border-radius: var(--radius-pill);
+      background: var(--bg-sandstone-deep);
+      outline: none;
+      cursor: pointer;
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--emerald-900);
+      border: 3px solid var(--gold-500);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+      transition: transform 0.15s ease;
+    }
+
+    input[type="range"]::-webkit-slider-thumb:hover {
+      transform: scale(1.1);
+    }
+
+    input[type="range"]::-moz-range-thumb {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: var(--emerald-900);
+      border: 3px solid var(--gold-500);
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.22);
+    }
+
+    /* 61-Line Visual Segment Track */
+    .tuhfah-segments {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 4px;
+      margin: 14px 0;
+    }
+
+    @media (min-width: 768px) {
+      .tuhfah-segments {
+        grid-template-columns: repeat(61, 1fr);
+        gap: 2px;
+      }
+    }
+
+    .line-tick {
+      height: 16px;
+      border-radius: 3px;
+      background: var(--bg-sandstone-deep);
+      border: 1px solid var(--border-stone);
+      cursor: pointer;
+      transition: background 0.15s ease, transform 0.1s ease;
+    }
+
+    .line-tick.memorized {
+      background: var(--emerald-800);
+      border-color: var(--emerald-900);
+    }
+
+    .line-tick.milestone-end {
+      border-right: 2px solid var(--gold-600);
+    }
+
+    .line-tick:hover {
+      transform: scaleY(1.2);
+    }
+
+    .milestone-chips {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    @media (min-width: 640px) {
+      .milestone-chips {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+
+    @media (min-width: 960px) {
+      .milestone-chips {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+
+    .milestone-chip {
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--border-stone);
+      background: var(--bg-sandstone);
+      font-size: 0.82rem;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      text-align: left;
+    }
+
+    .milestone-chip.unlocked {
+      background: var(--emerald-50);
+      border-color: var(--emerald-700);
+    }
+
+    .milestone-chip.unlocked .ms-status {
+      color: var(--emerald-800);
+      font-weight: 700;
+    }
+
+    .milestone-chip.ijazah-gold.unlocked {
+      background: linear-gradient(135deg, var(--gold-50), var(--gold-100));
+      border-color: var(--gold-500);
+    }
+
+    .ms-title {
+      font-weight: 700;
+      color: var(--ink-primary);
+    }
+
+    .ms-status {
+      font-size: 0.75rem;
+      color: var(--ink-muted);
+    }
+
+    /* 3-Phase Prep Grid */
+    .phases-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+      margin-top: 18px;
+    }
+
+    @media (min-width: 960px) {
+      .phases-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .phase-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-stone);
+      border-radius: var(--radius-lg);
+      padding: 18px;
+      box-shadow: var(--shadow-card);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .phase-tag {
+      font-size: 0.74rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--gold-700);
+      background: var(--gold-50);
+      border: 1px solid var(--gold-100);
+      padding: 4px 10px;
+      border-radius: var(--radius-pill);
+      align-self: flex-start;
+    }
+
+    .phase-title {
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--emerald-950);
+    }
+
+    .task-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 10px;
+      border-radius: var(--radius-sm);
+      background: var(--bg-sandstone);
+      border: 1px solid transparent;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .task-item:hover {
+      border-color: var(--border-stone-strong);
+    }
+
+    .task-item.completed {
+      background: var(--emerald-50);
+      border-color: var(--emerald-100);
+    }
+
+    .task-item input[type="checkbox"] {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      margin-top: 2px;
+      accent-color: var(--emerald-900);
+      cursor: pointer;
+    }
+
+    .task-text {
+      font-size: 0.86rem;
+      color: var(--ink-primary);
+      line-height: 1.45;
+    }
+
+    .task-item.completed .task-text {
+      text-decoration: line-through;
+      color: var(--ink-muted);
+    }
+
+    /* ==========================================================================
+       MODULE 2: BUDGET & 9-MONTH FUNDING ENGINE
+       ========================================================================== */
+    .preset-bar {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .preset-bar {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .preset-btn {
+      appearance: none;
+      text-align: left;
+      background: var(--bg-sandstone);
+      border: 2px solid var(--border-stone);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .preset-btn:hover {
+      border-color: var(--emerald-700);
+    }
+
+    .preset-btn.active {
+      background: var(--emerald-50);
+      border-color: var(--emerald-900);
+      box-shadow: 0 4px 14px rgba(19, 78, 74, 0.12);
+    }
+
+    .preset-name {
+      font-weight: 800;
+      font-size: 0.94rem;
+      color: var(--emerald-950);
+    }
+
+    .preset-price {
+      font-weight: 800;
+      font-size: 1.15rem;
+      color: var(--gold-700);
+    }
+
+    .preset-desc {
+      font-size: 0.8rem;
+      color: var(--ink-secondary);
+    }
+
+    .budget-split-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 960px) {
+      .budget-split-grid {
+        grid-template-columns: 1.15fr 0.85fr;
+      }
+    }
+
+    .slider-row {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--bg-sandstone-deep);
+    }
+
+    .slider-row:last-child {
+      border-bottom: none;
+    }
+
+    .slider-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      font-size: 0.88rem;
+    }
+
+    .slider-label {
+      font-weight: 600;
+      color: var(--ink-primary);
+    }
+
+    .slider-val {
+      font-weight: 800;
+      color: var(--emerald-900);
+      font-variant-numeric: tabular-nums;
+      background: var(--emerald-50);
+      padding: 2px 9px;
+      border-radius: var(--radius-pill);
+    }
+
+    /* Funding Engine Panel */
+    .funding-panel {
+      background: linear-gradient(180deg, #fffdf9 0%, var(--bg-sandstone) 100%);
+      border: 1px solid var(--border-stone-strong);
+      border-radius: var(--radius-lg);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .bucket-card {
+      background: var(--surface-card);
+      border: 1px solid var(--border-stone);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .bucket-top {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 8px;
+    }
+
+    .bucket-title {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--emerald-950);
+    }
+
+    .bucket-hint {
+      font-size: 0.78rem;
+      color: var(--ink-muted);
+    }
+
+    .number-input-wrap {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg-sandstone);
+      border: 1px solid var(--border-stone-strong);
+      border-radius: var(--radius-sm);
+      padding: 4px 10px;
+      width: 135px;
+    }
+
+    .number-input-wrap span {
+      font-weight: 700;
+      color: var(--ink-secondary);
+    }
+
+    .number-input-wrap input {
+      width: 100%;
+      border: none;
+      background: transparent;
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--emerald-950);
+      outline: none;
+      min-height: 32px;
+    }
+
+    .funding-summary-box {
+      background: var(--emerald-950);
+      color: #ffffff;
+      border-radius: var(--radius-md);
+      padding: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .fund-stat-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.88rem;
+    }
+
+    .fund-stat-row strong {
+      font-size: 1.05rem;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .gap-highlight {
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+      padding-top: 10px;
+      margin-top: 2px;
+    }
+
+    /* ==========================================================================
+       MODULE 3: COMMUNITY UTILITY PATHS & SPINE-SMART DAILY RHYTHM
+       ========================================================================== */
+    .utility-toggle-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    @media (min-width: 768px) {
+      .utility-toggle-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .utility-btn {
+      appearance: none;
+      background: var(--bg-sandstone);
+      border: 2px solid var(--border-stone);
+      border-radius: var(--radius-md);
+      padding: 14px;
+      text-align: left;
+      cursor: pointer;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+
+    .utility-btn.active {
+      background: var(--emerald-900);
+      border-color: var(--emerald-900);
+      color: #ffffff;
+    }
+
+    .utility-btn.active .u-sub {
+      color: rgba(255, 255, 255, 0.82);
+    }
+
+    .u-title {
+      font-weight: 700;
+      font-size: 0.94rem;
+      margin-bottom: 4px;
+    }
+
+    .u-sub {
+      font-size: 0.78rem;
+      color: var(--ink-secondary);
+    }
+
+    .utility-detail-panel {
+      background: var(--bg-sandstone);
+      border: 1px solid var(--border-stone);
+      border-radius: var(--radius-md);
+      padding: 18px;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+
+    @media (min-width: 768px) {
+      .utility-detail-panel {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .u-col h4 {
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--gold-700);
+      margin-bottom: 6px;
+    }
+
+    .u-col p {
+      font-size: 0.9rem;
+      color: var(--ink-primary);
+    }
+
+    /* Spine-Smart Rhythm Timeline */
+    .rhythm-header-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .rhythm-pill {
+      appearance: none;
+      border: 1px solid var(--border-stone-strong);
+      background: var(--bg-sandstone);
+      color: var(--ink-primary);
+      font-family: inherit;
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding: 7px 14px;
+      border-radius: var(--radius-pill);
+      cursor: pointer;
+      min-height: 38px;
+    }
+
+    .rhythm-pill.active {
+      background: var(--gold-600);
+      border-color: var(--gold-600);
+      color: #ffffff;
+    }
+
+    .timeline-list {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .timeline-slot {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      padding: 14px 16px;
+      border-radius: var(--radius-md);
+      background: var(--bg-sandstone);
+      border-left: 4px solid var(--emerald-800);
+    }
+
+    @media (min-width: 640px) {
+      .timeline-slot {
+        grid-template-columns: 175px 1fr;
+        align-items: center;
+        gap: 16px;
+      }
+    }
+
+    .timeline-slot.spine-care {
+      background: var(--gold-50);
+      border-left-color: var(--gold-500);
+    }
+
+    .slot-time {
+      font-weight: 800;
+      font-size: 0.86rem;
+      color: var(--emerald-900);
+    }
+
+    .slot-title {
+      font-weight: 700;
+      font-size: 0.94rem;
+      color: var(--ink-primary);
+    }
+
+    .slot-desc {
+      font-size: 0.84rem;
+      color: var(--ink-secondary);
+      margin-top: 2px;
+    }
+
+    /* ==========================================================================
+       CUSTOM MODAL & TOAST (Zero native alert/confirm)
+       ========================================================================== */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(9, 44, 41, 0.58);
+      backdrop-filter: blur(4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      z-index: 100;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal-box {
+      background: var(--surface-card);
+      border: 1px solid var(--border-stone);
+      border-radius: var(--radius-lg);
+      max-width: 440px;
+      width: 100%;
+      padding: 24px;
+      box-shadow: var(--shadow-elevated);
+    }
+
+    .modal-box h3 {
+      font-size: 1.15rem;
+      color: var(--emerald-950);
+      margin-bottom: 8px;
+    }
+
+    .modal-box p {
+      font-size: 0.9rem;
+      color: var(--ink-secondary);
+      margin-bottom: 18px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--emerald-950);
+      color: #ffffff;
+      border: 1px solid var(--gold-500);
+      padding: 12px 18px;
+      border-radius: var(--radius-md);
+      font-size: 0.86rem;
+      font-weight: 600;
+      box-shadow: var(--shadow-elevated);
+      transform: translateY(120%);
+      opacity: 0;
+      transition: all 0.25s ease;
+      z-index: 110;
+      max-width: calc(100vw - 40px);
+    }
+
+    .toast.show {
+      transform: translateY(0);
+      opacity: 1;
+    }
+
+    footer {
+      text-align: center;
+      padding: 24px 16px 40px;
+      color: var(--ink-muted);
+      font-size: 0.82rem;
+      border-top: 1px solid var(--border-stone);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================================================================
+       MISSION HEADER & LIVE COUNTDOWN
+       ======================================================================== -->
+  <header class="hero-banner">
+    <div class="container hero-inner">
+      <div class="hero-top-row">
+        <div>
+          <div class="mission-eyebrow">
+            <span>FALL 2027 IMMERSION</span>
+            <span>•</span>
+            <span>QUBA SOUTH &amp; MASJID AN-NABAWI</span>
+          </div>
+          <h1 class="hero-title">Madinah 2027: Mission Control</h1>
+          <p class="hero-subtitle">
+            9-Month Preparation, Spine-Smart Pacing &amp; Funding Dashboard — turning 15 years of faith into certified service for your Imam, teacher, and home Masjid.
+          </p>
+          <div class="hero-intention-pill">
+            <span>Niyyah Anchor:</span>
+            <strong>“Learn to serve my teacher, my Imam, and my community.”</strong>
+          </div>
+        </div>
+
+        <!-- Live Countdown to September 1, 2027 -->
+        <div class="countdown-box" aria-label="Countdown to September 1, 2027">
+          <div class="countdown-label">
+            <span>Departure Target: Sept 1, 2027</span>
+            <span id="cd-weeks-badge">-- Weeks</span>
+          </div>
+          <div class="countdown-grid">
+            <div class="cd-unit">
+              <span class="cd-num" id="cd-days">---</span>
+              <span class="cd-text">Days</span>
+            </div>
+            <div class="cd-unit">
+              <span class="cd-num" id="cd-hours">--</span>
+              <span class="cd-text">Hours</span>
+            </div>
+            <div class="cd-unit">
+              <span class="cd-num" id="cd-mins">--</span>
+              <span class="cd-text">Mins</span>
+            </div>
+            <div class="cd-unit">
+              <span class="cd-num" id="cd-secs">--</span>
+              <span class="cd-text">Secs</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 4 Quick-Stat KPI Cards -->
+      <div class="kpi-grid">
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Overall Readiness</span>
+            <span id="kpi-readiness-tag">Building</span>
+          </div>
+          <div class="kpi-value" id="kpi-readiness">0%</div>
+          <div class="mini-bar"><div class="mini-bar-fill" id="bar-readiness" style="width: 0%"></div></div>
+          <div class="kpi-sub">Weighted: Funding (40%), Tuhfah (30%), Prep (30%)</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>9-Month Funding</span>
+            <span id="kpi-savings-pct">0%</span>
+          </div>
+          <div class="kpi-value" id="kpi-savings">$0 / $3,050</div>
+          <div class="mini-bar"><div class="mini-bar-fill" id="bar-savings" style="width: 0%"></div></div>
+          <div class="kpi-sub" id="kpi-savings-sub">$339/mo target over 9 months</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Tuhfat al-Atfal</span>
+            <span id="kpi-tuhfah-badge">Muqaddimah</span>
+          </div>
+          <div class="kpi-value" id="kpi-tuhfah">0 / 61 Lines</div>
+          <div class="mini-bar"><div class="mini-bar-fill" id="bar-tuhfah" style="width: 0%"></div></div>
+          <div class="kpi-sub" id="kpi-tuhfah-pace">~1.6 lines/week needed</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
+            <span>Prep Milestones</span>
+            <span id="kpi-tasks-count">0 / 12</span>
+          </div>
+          <div class="kpi-value" id="kpi-weeks">-- Weeks</div>
+          <div class="mini-bar"><div class="mini-bar-fill" id="bar-tasks" style="width: 0%"></div></div>
+          <div class="kpi-sub">Dec 2026 – Aug 2027 Runway</div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- ========================================================================
+       STICKY NAVIGATION & LOCALSTORAGE PERSISTENCE BAR
+       ======================================================================== -->
+  <nav class="control-bar" aria-label="Dashboard Navigation and Data Controls">
+    <div class="container control-bar-inner">
+      <div class="nav-tabs" role="tablist">
+        <button class="tab-btn active" role="tab" aria-selected="true" data-tab="all">All Modules</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="prep">1. Prep &amp; Tuhfah</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="budget">2. Budget &amp; Funding</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="utility">3. Utility &amp; Spine Rhythm</button>
+      </div>
+
+      <div class="persistence-actions">
+        <span class="save-badge" id="save-status" title="All changes save automatically to your browser">
+          <span class="save-dot"></span>
+          <span>Auto-Saved</span>
+        </span>
+        <button class="action-btn" id="btn-export" type="button">Export Progress JSON</button>
+        <button class="action-btn danger" id="btn-reset" type="button">Reset Defaults</button>
+      </div>
+    </div>
+  </nav>
+
+  <!-- ========================================================================
+       MAIN DASHBOARD MODULES
+       ======================================================================== -->
+  <main class="container">
+
+    <!-- ======================================================================
+         MODULE 1: 9-MONTH PREP & TUHFAT AL-ATFAL TRACKER
+         ====================================================================== -->
+    <section class="module-section" id="module-prep">
+      <div class="section-heading">
+        <div class="section-title-group">
+          <h2>1. 9-Month Prep &amp; <span class="arabic">تُحْفَةُ الأَطْفَال</span> Tracker</h2>
+          <p>Arrive in Madinah with all 61 lines memorized so you can test for <span class="arabic">إِجَازَة</span> in Week 1.</p>
+        </div>
+        <span class="pill-badge emerald" id="tuhfah-percent-pill">0% Memorized</span>
+      </div>
+
+      <!-- Interactive Tuhfat al-Atfal Counter Card -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">
+            <span>Lines Memorized Counter (0 – 61 Lines)</span>
+          </div>
+          <span class="pill-badge" id="tuhfah-milestone-pill">Stage 1: Al-Muqaddimah (Lines 1–5)</span>
+        </div>
+
+        <div class="tuhfah-controls">
+          <div class="counter-btn-group">
+            <button class="step-btn" type="button" data-delta="-5" aria-label="Subtract 5 lines">-5</button>
+            <button class="step-btn" type="button" data-delta="-1" aria-label="Subtract 1 line">-1</button>
+            <button class="step-btn" type="button" data-delta="1" aria-label="Add 1 line">+1</button>
+            <button class="step-btn" type="button" data-delta="5" aria-label="Add 5 lines">+5</button>
+          </div>
+
+          <div class="range-wrapper">
+            <label for="tuhfah-slider" style="font-size: 0.84rem; font-weight: 600; color: var(--ink-secondary);">
+              Slide or click any block below to set exact line count: <strong id="tuhfah-slider-val" style="color: var(--emerald-900);">0</strong> / 61
+            </label>
+            <input type="range" id="tuhfah-slider" min="0" max="61" value="0" />
+          </div>
+        </div>
+
+        <!-- 61-Segment Visual Progress Bar -->
+        <div class="tuhfah-segments" id="tuhfah-segments" aria-label="61 lines visual progress bar"></div>
+
+        <!-- 4 Milestone Badges -->
+        <div class="milestone-chips">
+          <button type="button" class="milestone-chip" id="ms-1" data-jump="5">
+            <span class="ms-title">1. Al-Muqaddimah (Lines 1–5)</span>
+            <span class="ms-status">Target: Line 5</span>
+          </button>
+          <button type="button" class="milestone-chip" id="ms-2" data-jump="16">
+            <span class="ms-title">2. Nun Sakinah &amp; Tanwin (6–16)</span>
+            <span class="ms-status">Target: Line 16</span>
+          </button>
+          <button type="button" class="milestone-chip" id="ms-3" data-jump="34">
+            <span class="ms-title">3. Mim, Lam &amp; Idgham (17–34)</span>
+            <span class="ms-status">Target: Line 34</span>
+          </button>
+          <button type="button" class="milestone-chip ijazah-gold" id="ms-4" data-jump="61">
+            <span class="ms-title">4. Madd &amp; Complete (35–61)</span>
+            <span class="ms-status">Ready for Ijazah!</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- 3-Phase Checkable Prep Roadmap -->
+      <div class="phases-grid">
+        <!-- Phase 1 -->
+        <div class="phase-card">
+          <span class="phase-tag">Phase 1 • Dec 2026 – Feb 2027</span>
+          <h3 class="phase-title">Tuhfat al-Atfal &amp; Spine Recovery Pacing</h3>
+          <ul class="task-list" id="tasks-phase-1"></ul>
+        </div>
+
+        <!-- Phase 2 -->
+        <div class="phase-card">
+          <span class="phase-tag">Phase 2 • Mar 2027 – May 2027</span>
+          <h3 class="phase-title">Repair Nahw &amp; Sarf Roots &amp; Verb Forms</h3>
+          <ul class="task-list" id="tasks-phase-2"></ul>
+        </div>
+
+        <!-- Phase 3 -->
+        <div class="phase-card">
+          <span class="phase-tag">Phase 3 • Jun 2027 – Aug 2027</span>
+          <h3 class="phase-title">Spoken Ear, Teacher Outreach &amp; Logistics</h3>
+          <ul class="task-list" id="tasks-phase-3"></ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         MODULE 2: BUDGET & 9-MONTH FUNDING ENGINE
+         ====================================================================== -->
+    <section class="module-section" id="module-budget">
+      <div class="section-heading">
+        <div class="section-title-group">
+          <h2>2. Budget &amp; 9-Month Funding Engine</h2>
+          <p>Compare study-cost scenarios (including teacher-connected Madinah savings) and track your 9-month funding plan.</p>
+        </div>
+        <span class="pill-badge" id="budget-sar-badge">≈ 11,438 SAR Total</span>
+      </div>
+
+      <div class="card">
+        <!-- Preset Scenario Buttons -->
+        <div class="preset-bar" role="group" aria-label="Budget Scenario Presets">
+          <button type="button" class="preset-btn active" data-preset="lean">
+            <span class="preset-name">Lean / Teacher-Connected</span>
+            <span class="preset-price">$3,050 all-in</span>
+            <span class="preset-desc">Free Masjid an-Nabawi Muqri'ah + teacher/family network guidance; zero private tutor cost.</span>
+          </button>
+          <button type="button" class="preset-btn" data-preset="hybrid">
+            <span class="preset-name">Balanced 70/30 Hybrid</span>
+            <span class="preset-price">$4,350 all-in</span>
+            <span class="preset-desc">Free Muqri'ah for Tuhfah/Hafs + 3x/week grad tutor for Ajurrumiyyah &amp; Bina' al-Af'al.</span>
+          </button>
+          <button type="button" class="preset-btn" data-preset="bootcamp">
+            <span class="preset-name">Full 1-on-1 Bootcamp</span>
+            <span class="preset-price">$5,050 all-in</span>
+            <span class="preset-desc">5x/week private tutor + Quba studio + full spine-comfort golf-cart budget.</span>
+          </button>
+        </div>
+
+        <div class="budget-split-grid">
+          <!-- Left: Interactive Cost Sliders -->
+          <div>
+            <div class="card-header">
+              <div class="card-title">All-In 90-Day Trip Expenses (USD)</div>
+              <span class="pill-badge emerald" id="total-budget-pill">Total: $3,050</span>
+            </div>
+
+            <div class="slider-row">
+              <div class="slider-meta">
+                <label class="slider-label" for="cost-flight">Roundtrip Flight (ATL – MED)</label>
+                <span class="slider-val" id="val-flight">$850</span>
+              </div>
+              <input type="range" id="cost-flight" min="650" max="1400" step="25" value="850" />
+            </div>
+
+            <div class="slider-row">
+              <div class="slider-meta">
+                <label class="slider-label" for="cost-visa">Saudi Tourist eVisa (90-Day Single Stay)</label>
+                <span class="slider-val" id="val-visa">$110</span>
+              </div>
+              <input type="range" id="cost-visa" min="90" max="160" step="5" value="110" />
+            </div>
+
+            <div class="slider-row">
+              <div class="slider-meta">
+                <label class="slider-label" for="cost-rent">Quba Studio Rent × 3 mos (Furnished, No Kitchen)</label>
+                <span class="slider-val" id="val-rent">$950</span>
+              </div>
+              <input type="range" id="cost-rent" min="750" max="1500" step="25" value="950" />
+            </div>
+
+            <div class="slider-row">
+              <div class="slider-meta">
+                <label class="slider-label" for="cost-food">Food &amp; Tea × 3 mos (Quba Bufiyah / Bukhari)</label>
+                <span class="slider-val" id="val-food">$650</span>
+              </div>
+              <input type="range" id="cost-food" min="450" max="1000" step="25" value="650" />
+            </div>
+
+            <div class="slider-row">
+              <div class="slider-meta">
+                <label class="slider-label" for="cost-tutor">Private Tutor × 3 mos ($0 Muqri'ah – $1,815 Daily)</label>
+                <span class="slider-val" id="val-tutor">$0</span>
+              </div>
+              <input type="range" id="cost-tutor" min="0" max="1815" step="15" value="0" />
+            </div>
+
+            <div class="slider-row">
+              <div class="slider-meta">
+                <label class="slider-label" for="cost-transit">Local SIM &amp; Quba–Haram Electric Golf Carts × 3 mos</label>
+                <span class="slider-val" id="val-transit">$290</span>
+              </div>
+              <input type="range" id="cost-transit" min="150" max="500" step="10" value="290" />
+            </div>
+
+            <div class="slider-row">
+              <div class="slider-meta">
+                <label class="slider-label" for="cost-buffer">Emergency / Spine Comfort Buffer (Chair, Physio, Meds)</label>
+                <span class="slider-val" id="val-buffer">$200</span>
+              </div>
+              <input type="range" id="cost-buffer" min="100" max="600" step="25" value="200" />
+            </div>
+          </div>
+
+          <!-- Right: 9-Month Fundraising & Survival Tracker -->
+          <div class="funding-panel">
+            <div class="card-header" style="margin-bottom: 4px;">
+              <div class="card-title">9-Month Fundraising &amp; Survival Tracker</div>
+            </div>
+            <p style="font-size: 0.82rem; color: var(--ink-secondary);">
+              Combine three realistic buckets over the next 9 months (Dec 2026 – Aug 2027) without sacrificing your recovery or bills at home.
+            </p>
+
+            <!-- Bucket A -->
+            <div class="bucket-card">
+              <div class="bucket-top">
+                <div>
+                  <div class="bucket-title">(a) Personal Monthly Set-Aside</div>
+                  <div class="bucket-hint">Monthly discipline × 9 months = <strong id="bucket-a-total">$0</strong></div>
+                </div>
+                <div class="number-input-wrap">
+                  <span>$</span>
+                  <input type="number" id="fund-monthly" min="0" max="2000" step="10" value="150" aria-label="Personal monthly set-aside in dollars" />
+                  <span style="font-size: 0.72rem;">/mo</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Bucket B -->
+            <div class="bucket-card">
+              <div class="bucket-top">
+                <div>
+                  <div class="bucket-title">(b) Low-Impact Remote / Skill Sprints</div>
+                  <div class="bucket-hint">Spine-safe desk/remote micro-projects over 9 mos</div>
+                </div>
+                <div class="number-input-wrap">
+                  <span>$</span>
+                  <input type="number" id="fund-sprints" min="0" max="10000" step="25" value="900" aria-label="Low-impact remote or skill sprints total in dollars" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Bucket C -->
+            <div class="bucket-card">
+              <div class="bucket-top">
+                <div>
+                  <div class="bucket-title">(c) Masjid / Teacher / Community Stipend</div>
+                  <div class="bucket-hint">Sponsorship from those investing in your return service</div>
+                </div>
+                <div class="number-input-wrap">
+                  <span>$</span>
+                  <input type="number" id="fund-stipend" min="0" max="10000" step="25" value="800" aria-label="Masjid or community study stipend in dollars" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Live Funding Summary Box -->
+            <div class="funding-summary-box">
+              <div class="fund-stat-row">
+                <span>Selected Mission Budget:</span>
+                <strong id="sum-target">$3,050</strong>
+              </div>
+              <div class="fund-stat-row">
+                <span>9-Month Projected Funding (a + b + c):</span>
+                <strong id="sum-projected" style="color: #fde68a;">$3,050</strong>
+              </div>
+              <div class="fund-stat-row">
+                <span>Baseline Monthly Target (÷ 9 mos):</span>
+                <strong id="sum-monthly-needed">$339 / mo</strong>
+              </div>
+              <div class="fund-stat-row gap-highlight">
+                <span id="sum-gap-label">Remaining Funding Gap:</span>
+                <strong id="sum-gap" style="color: #86efac;">$0 (Fully Covered!)</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================================
+         MODULE 3: COMMUNITY UTILITY STUDY PATH & SPINE-SMART DAILY RHYTHM
+         ====================================================================== -->
+    <section class="module-section" id="module-utility">
+      <div class="section-heading">
+        <div class="section-title-group">
+          <h2>3. Community Utility Path &amp; Spine-Smart Rhythm</h2>
+          <p>How your 90 days in Madinah transform into concrete service back home—paced to protect your healing spine.</p>
+        </div>
+      </div>
+
+      <!-- Community Utility Path Selector -->
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="card-header">
+          <div class="card-title">What You Bring Back to Your Imam, Teacher &amp; Masjid</div>
+          <span class="pill-badge emerald">Select Return Mission</span>
+        </div>
+
+        <div class="utility-toggle-grid" role="tablist" aria-label="Community Utility Paths">
+          <button type="button" class="utility-btn active" data-utility="tajwid">
+            <div class="u-title">Path A: Youth &amp; Convert Tajwid Teacher</div>
+            <div class="u-sub"><span class="arabic" style="font-size:1em;">إِجَازَةُ تُحْفَةِ الأَطْفَال</span> + Hafs Recitation</div>
+          </button>
+          <button type="button" class="utility-btn" data-utility="arabic">
+            <div class="u-title">Path B: Beginner Qur'an Arabic Mentor</div>
+            <div class="u-sub"><span class="arabic" style="font-size:1em;">الآجُرُّومِيَّة</span> + <span class="arabic" style="font-size:1em;">بِنَاءُ الأَفْعَال</span></div>
+          </button>
+          <button type="button" class="utility-btn" data-utility="assistant">
+            <div class="u-title">Path C: Halaqah &amp; New Muslim Bridge</div>
+            <div class="u-sub">Spoken Arabic + Foundational Mutun</div>
+          </button>
+        </div>
+
+        <div class="utility-detail-panel" id="utility-detail-panel">
+          <!-- Populated dynamically by JS -->
+        </div>
+      </div>
+
+      <!-- Spine-Smart Daily Schedule in Madinah -->
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Spine-Smart Daily Rhythm in Madinah (Quba South Base)</div>
+          <div class="rhythm-header-controls">
+            <button type="button" class="rhythm-pill active" data-rhythm="hybrid">Hybrid Study Day</button>
+            <button type="button" class="rhythm-pill" data-rhythm="muqriah">Muqri'ah &amp; Recovery Day</button>
+          </div>
+        </div>
+        <p style="font-size: 0.85rem; color: var(--ink-secondary);">
+          Designed for a 50-year-old student healing from spine surgery: zero long marches on hard marble, lumbar-supported seating, midday horizontal decompression, and 10 SAR electric golf carts between Quba and the Haram.
+        </p>
+
+        <div class="timeline-list" id="rhythm-timeline">
+          <!-- Populated dynamically by JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <div class="container">
+      <strong>Madinah 2027: Mission Control</strong> • Offline-Ready Single-File Dashboard • All progress stored privately in your browser's localStorage.
+    </div>
+  </footer>
+
+  <!-- Custom Confirmation Modal for Reset Defaults (Zero native confirm/alert) -->
+  <div class="modal-backdrop" id="reset-modal" role="dialog" aria-modal="true" aria-labelledby="reset-modal-title">
+    <div class="modal-box">
+      <h3 id="reset-modal-title">Reset Mission Control to Defaults?</h3>
+      <p>This will clear your saved Tuhfat al-Atfal line count, checked prep tasks, and custom budget numbers in this browser. Consider exporting a JSON backup first.</p>
+      <div class="modal-actions">
+        <button type="button" class="action-btn" id="modal-cancel">Cancel</button>
+        <button type="button" class="action-btn danger" id="modal-confirm-reset">Yes, Reset Everything</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Non-intrusive Toast Notification -->
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <!-- ========================================================================
+       VANILLA JAVASCRIPT APPLICATION LOGIC (Zero Dependencies + localStorage)
+       ======================================================================== -->
+  <script>
+    (function () {
+      "use strict";
+
+      const STORAGE_KEY = "madinah_2027_mission_control_v1";
+      const DEPARTURE_DATE = new Date("2027-09-01T00:00:00");
+
+      // Default Task Lists across the 3 Pre-Departure Phases
+      const DEFAULT_TASKS = {
+        phase1: [
+          { id: "p1_1", text: "Set a spine-safe daily 20-min audio + recitation routine (reclined or lumbar-supported, zero strain).", done: false },
+          { id: "p1_2", text: "Memorize Lines 1–30 of Tuhfat al-Atfal with Husary / Ayman Suwayd audio.", done: false },
+          { id: "p1_3", text: "Complete Lines 31–61 of Tuhfat al-Atfal and recite all 61 lines cleanly without prompting.", done: false },
+          { id: "p1_4", text: "Speak with your teacher (3rd-gen Madinah roots) about your 90-day goal & ask for Madinah Muqri'/tutor advice.", done: false }
+        ],
+        phase2: [
+          { id: "p2_1", text: "Drill the 10 Arabic verb forms (Al-Awzan) & 3-letter root extraction (Al-Judhur) 15 mins/day.", done: false },
+          { id: "p2_2", text: "Patch core Nahw foundations: Nominal vs. Verbal sentences and basic I'rab vowel signs.", done: false },
+          { id: "p2_3", text: "Read through Bina' al-Af'al once with English notes so morphology terms feel familiar.", done: false },
+          { id: "p2_4", text: "Read through Matn al-Ajurrumiyyah chapter headings & core definitions before tutoring starts.", done: false }
+        ],
+        phase3: [
+          { id: "p3_1", text: "Listen daily to Al-'Arabiyyah Bayna Yadayk dialogues while resting or walking to wake up spoken Arabic.", done: false },
+          { id: "p3_2", text: "Finalize Madinah tutor plan (teacher connection or IU graduate student near Quba Walkway).", done: false },
+          { id: "p3_3", text: "Apply for Saudi Tourist eVisa in early Aug 2027 (confirm 90-day continuous stay rule).", done: false },
+          { id: "p3_4", text: "Book ATL–MED flight (return Day 87–88) & 3-night starter hotel near Quba Walkway South.", done: false }
+        ]
+      };
+
+      // Budget Scenario Presets
+      const BUDGET_PRESETS = {
+        lean: {
+          flight: 850,
+          visa: 110,
+          rent: 950,
+          food: 650,
+          tutor: 0,
+          transit: 290,
+          buffer: 200
+        },
+        hybrid: {
+          flight: 850,
+          visa: 110,
+          rent: 1050,
+          food: 700,
+          tutor: 1140,
+          transit: 300,
+          buffer: 200
+        },
+        bootcamp: {
+          flight: 850,
+          visa: 110,
+          rent: 1075,
+          food: 700,
+          tutor: 1815,
+          transit: 300,
+          buffer: 200
+        }
+      };
+
+      // Community Utility Path Data
+      const UTILITY_PATHS = {
+        tajwid: {
+          earn: "Formal Ijazah with connected Sanad in Tuhfat al-Atfal (61 lines) + multiple Juz of Hafs 'an 'Asim recitation corrected by a certified Muqri' in Masjid an-Nabawi.",
+          serve: "Launch a structured 8-week 'Tajwid Foundations' circle for youth and new Muslims at your home Masjid—giving your Imam and teacher a reliable, credentialed instructor.",
+          fit: "Ideal for Lean ($3,050) or Balanced ($4,350) budgets because the Masjid an-Nabawi Muqri'ah is completely free."
+        },
+        arabic: {
+          earn: "Completed classical primers Matn al-Ajurrumiyyah (Nahw) and Bina' al-Af'al (Sarf) with live grammatical parsing (I'rab) of short Surahs.",
+          serve: "Lead a weekly 'Understanding Salah & Juz 'Amma' reading workshop for converts and adult learners who want to move beyond phonetic transliteration.",
+          fit: "Best paired with the Balanced 70/30 Hybrid ($4,350) or Full Bootcamp ($5,050) budget for 1-on-1 grammar drilling."
+        },
+        assistant: {
+          earn: "Practical spoken Hijazi/Fusha Arabic (Al-'Arabiyyah Bayna Yadayk), Tuhfat al-Atfal Ijazah, and sitting notes from Masjid an-Nabawi beginner Mutun circles.",
+          serve: "Serve as your teacher's right-hand TA for beginner review sessions, translate/assist visiting Arabic-speaking guests, and mentor new converts (15 yrs experience).",
+          fit: "Works smoothly on the Lean ($3,050) or Balanced ($4,350) budget through daily neighborhood & mosque immersion."
+        }
+      };
+
+      // Spine-Smart Daily Schedules
+      const RHYTHMS = {
+        hybrid: [
+          {
+            time: "Fajr – 7:30 AM",
+            title: "Electric Golf Cart to Masjid an-Nabawi + Muqri'ah",
+            desc: "Take the 10 SAR electric cart from Quba South (avoids a 40-min walk). Recite Tuhfat al-Atfal / Qur'an using a portable folding floor backrest.",
+            spineCare: true
+          },
+          {
+            time: "8:00 AM – 10:30 AM",
+            title: "Bufiyah Breakfast & Horizontal Spine Decompression",
+            desc: "Light foul/eggs & mint tea in Quba, followed by 90 minutes lying flat on a firm mattress to unload lumbar discs.",
+            spineCare: true
+          },
+          {
+            time: "10:45 AM – 12:30 PM",
+            title: "1-on-1 Nahw & Sarf Session (Ergonomic Chair)",
+            desc: "Two 45-minute study blocks on Al-Ajurrumiyyah & Bina' al-Af'al with a mandatory 10-minute stand-and-stretch break in between.",
+            spineCare: false
+          },
+          {
+            time: "Dhuhr – Asr",
+            title: "Masjid Quba Prayer, Main Meal & Midday Rest",
+            desc: "Easy 6-minute flat stroll to Masjid Quba, grilled chicken & rice (Bukhari), then afternoon rest/ice or heat therapy.",
+            spineCare: true
+          },
+          {
+            time: "Asr – Maghrib",
+            title: "Paced Review & Smooth Quba Walkway Stroll",
+            desc: "25-minute desk review of I'rab notes + gentle flat walk along pedestrian-only Quba Walkway (level pavers, benches every 50m).",
+            spineCare: false
+          },
+          {
+            time: "Maghrib – 9:30 PM",
+            title: "Post-Maghrib Listening Circle & Early Lights-Out",
+            desc: "Optional beginner Matn circle seated against a pillar/backrest (listening-only, no homework), light dinner, sleep by 10:00 PM.",
+            spineCare: false
+          }
+        ],
+        muqriah: [
+          {
+            time: "Fajr – 8:00 AM",
+            title: "Morning Muqri'ah Session in Masjid an-Nabawi",
+            desc: "10 SAR electric cart to the Haram. Sit with lumbar support while waiting your turn (Al-Dawr) to recite 2–3 pages of Hafs to your Muqri'.",
+            spineCare: true
+          },
+          {
+            time: "8:30 AM – 11:30 AM",
+            title: "Restorative Morning & Passive Audio Listening",
+            desc: "Zero-pressure morning in your Quba studio: rest your back while listening to Shaykh Husary and Al-'Arabiyyah Bayna Yadayk dialogues.",
+            spineCare: true
+          },
+          {
+            time: "Dhuhr – Asr",
+            title: "Masjid Quba & Neighborhood Spoken Practice",
+            desc: "Short flat walk to Quba, friendly everyday Arabic conversations with local shopkeepers and tea-house regulars, followed by afternoon rest.",
+            spineCare: false
+          },
+          {
+            time: "Asr – Isha",
+            title: "Asr Muqri'ah Polishing & Early Recovery Night",
+            desc: "Second light recitation check or peer review at Masjid Quba, nourishing dinner, gentle stretching, and full night's sleep.",
+            spineCare: true
+          }
+        ]
+      };
+
+      // Default State Factory
+      function createDefaultState() {
+        return {
+          activeTab: "all",
+          tuhfahLines: 0,
+          tasks: JSON.parse(JSON.stringify(DEFAULT_TASKS)),
+          preset: "lean",
+          costs: { ...BUDGET_PRESETS.lean },
+          funding: {
+            monthlySetAside: 150,
+            remoteSprints: 900,
+            communityStipend: 800
+          },
+          utilityPath: "tajwid",
+          rhythmMode: "hybrid"
+        };
+      }
+
+      // Load State safely from localStorage
+      function loadState() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return createDefaultState();
+          const parsed = JSON.parse(raw);
+          const def = createDefaultState();
+          return {
+            ...def,
+            ...parsed,
+            tasks: {
+              phase1: parsed.tasks?.phase1 || def.tasks.phase1,
+              phase2: parsed.tasks?.phase2 || def.tasks.phase2,
+              phase3: parsed.tasks?.phase3 || def.tasks.phase3
+            },
+            costs: { ...def.costs, ...(parsed.costs || {}) },
+            funding: { ...def.funding, ...(parsed.funding || {}) }
+          };
+        } catch (err) {
+          console.warn("Could not read saved state, using defaults:", err);
+          return createDefaultState();
+        }
+      }
+
+      let state = loadState();
+
+      // Save State to localStorage with visual pulse
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+          const badge = document.getElementById("save-status");
+          if (badge) {
+            badge.innerHTML = '<span class="save-dot"></span><span>Saved</span>';
+          }
+        } catch (err) {
+          console.warn("localStorage save failed:", err);
+        }
+      }
+
+      // Show custom toast message
+      let toastTimer = null;
+      function showToast(msg) {
+        const el = document.getElementById("toast");
+        if (!el) return;
+        el.textContent = msg;
+        el.classList.add("show");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => {
+          el.classList.remove("show");
+        }, 3200);
+      }
+
+      // Format currency helper
+      function fmtUSD(num) {
+        return "$" + Math.round(num).toLocaleString("en-US");
+      }
+
+      // ======================================================================
+      // LIVE COUNTDOWN ENGINE
+      // ======================================================================
+      function updateCountdown() {
+        const now = new Date();
+        const diff = Math.max(0, DEPARTURE_DATE.getTime() - now.getTime());
+
+        const totalSeconds = Math.floor(diff / 1000);
+        const days = Math.floor(totalSeconds / 86400);
+        const hours = Math.floor((totalSeconds % 86400) / 3600);
+        const mins = Math.floor((totalSeconds % 3600) / 60);
+        const secs = totalSeconds % 60;
+        const weeks = Math.max(1, Math.ceil(days / 7));
+
+        document.getElementById("cd-days").textContent = days;
+        document.getElementById("cd-hours").textContent = String(hours).padStart(2, "0");
+        document.getElementById("cd-mins").textContent = String(mins).padStart(2, "0");
+        document.getElementById("cd-secs").textContent = String(secs).padStart(2, "0");
+        document.getElementById("cd-weeks-badge").textContent = weeks + " Weeks";
+        document.getElementById("kpi-weeks").textContent = weeks + " Weeks";
+
+        // Update Tuhfat al-Atfal pace based on weeks remaining (targeting 2 weeks buffer before departure)
+        const studyWeeks = Math.max(1, weeks - 2);
+        const linesLeft = Math.max(0, 61 - state.tuhfahLines);
+        const paceEl = document.getElementById("kpi-tuhfah-pace");
+        if (linesLeft === 0) {
+          paceEl.textContent = "All 61 lines complete — polish fluency!";
+        } else {
+          const perWeek = (linesLeft / studyWeeks).toFixed(1);
+          paceEl.textContent = `~${perWeek} lines/week needed (${linesLeft} left)`;
+        }
+      }
+
+      // ======================================================================
+      // RENDER FUNCTIONS
+      // ======================================================================
+      function renderTuhfah() {
+        const lines = Math.max(0, Math.min(61, Number(state.tuhfahLines) || 0));
+        state.tuhfahLines = lines;
+
+        const pct = Math.round((lines / 61) * 100);
+        document.getElementById("tuhfah-slider").value = lines;
+        document.getElementById("tuhfah-slider-val").textContent = lines;
+        document.getElementById("tuhfah-percent-pill").textContent = `${pct}% Memorized`;
+        document.getElementById("kpi-tuhfah").textContent = `${lines} / 61 Lines`;
+        document.getElementById("bar-tuhfah").style.width = `${pct}%`;
+
+        // Stage badge logic
+        let stageLabel = "Stage 1: Al-Muqaddimah (1–5)";
+        let shortBadge = "Muqaddimah";
+        if (lines >= 61) {
+          stageLabel = "Complete! Ready for Ijazah (61/61)";
+          shortBadge = "Ijazah Ready";
+        } else if (lines >= 35) {
+          stageLabel = "Stage 4: Ahkam al-Madd (35–61)";
+          shortBadge = "Al-Madd";
+        } else if (lines >= 17) {
+          stageLabel = "Stage 3: Mim, Lam & Idgham (17–34)";
+          shortBadge = "Mim & Lam";
+        } else if (lines >= 6) {
+          stageLabel = "Stage 2: Nun Sakinah & Tanwin (6–16)";
+          shortBadge = "Nun Sakinah";
+        }
+        document.getElementById("tuhfah-milestone-pill").textContent = stageLabel;
+        document.getElementById("kpi-tuhfah-badge").textContent = shortBadge;
+
+        // Render 61 clickable segments
+        const segContainer = document.getElementById("tuhfah-segments");
+        segContainer.innerHTML = "";
+        const milestoneEnds = new Set([5, 16, 34, 61]);
+        for (let i = 1; i <= 61; i++) {
+          const tick = document.createElement("div");
+          tick.className = "line-tick" + (i <= lines ? " memorized" : "") + (milestoneEnds.has(i) ? " milestone-end" : "");
+          tick.title = `Line ${i} of 61 (click to set)`;
+          tick.setAttribute("role", "button");
+          tick.setAttribute("aria-label", `Set memorized lines to ${i}`);
+          tick.addEventListener("click", () => {
+            state.tuhfahLines = (state.tuhfahLines === i) ? i - 1 : i;
+            saveState();
+            renderAll();
+          });
+          segContainer.appendChild(tick);
+        }
+
+        // Update 4 milestone cards
+        const thresholds = [
+          { id: "ms-1", target: 5 },
+          { id: "ms-2", target: 16 },
+          { id: "ms-3", target: 34 },
+          { id: "ms-4", target: 61 }
+        ];
+        thresholds.forEach((m) => {
+          const el = document.getElementById(m.id);
+          const statusEl = el.querySelector(".ms-status");
+          if (lines >= m.target) {
+            el.classList.add("unlocked");
+            statusEl.textContent = m.target === 61 ? "Unlocked — Ready for Sanad!" : `Completed (Line ${m.target})`;
+          } else {
+            el.classList.remove("unlocked");
+            statusEl.textContent = `Target: Line ${m.target} (${m.target - lines} away)`;
+          }
+        });
+      }
+
+      function renderTasks() {
+        const phases = ["phase1", "phase2", "phase3"];
+        let totalTasks = 0;
+        let doneTasks = 0;
+
+        phases.forEach((phaseKey, idx) => {
+          const ul = document.getElementById(`tasks-phase-${idx + 1}`);
+          ul.innerHTML = "";
+          const list = state.tasks[phaseKey] || [];
+
+          list.forEach((task) => {
+            totalTasks++;
+            if (task.done) doneTasks++;
+
+            const li = document.createElement("li");
+            li.className = "task-item" + (task.done ? " completed" : "");
+
+            const cb = document.createElement("input");
+            cb.type = "checkbox";
+            cb.checked = !!task.done;
+            cb.id = task.id;
+
+            const span = document.createElement("label");
+            span.className = "task-text";
+            span.setAttribute("for", task.id);
+            span.textContent = task.text;
+
+            cb.addEventListener("change", () => {
+              task.done = cb.checked;
+              saveState();
+              renderAll();
+            });
+
+            li.appendChild(cb);
+            li.appendChild(span);
+            ul.appendChild(li);
+          });
+        });
+
+        const taskPct = totalTasks > 0 ? Math.round((doneTasks / totalTasks) * 100) : 0;
+        document.getElementById("kpi-tasks-count").textContent = `${doneTasks} / ${totalTasks}`;
+        document.getElementById("bar-tasks").style.width = `${taskPct}%`;
+
+        return { totalTasks, doneTasks, taskPct };
+      }
+
+      function renderBudgetAndFunding() {
+        const c = state.costs;
+        const costKeys = ["flight", "visa", "rent", "food", "tutor", "transit", "buffer"];
+
+        let totalBudget = 0;
+        costKeys.forEach((k) => {
+          const val = Number(c[k]) || 0;
+          totalBudget += val;
+          const slider = document.getElementById(`cost-${k}`);
+          const label = document.getElementById(`val-${k}`);
+          if (slider) slider.value = val;
+          if (label) label.textContent = fmtUSD(val);
+        });
+
+        // Update active preset button highlight
+        document.querySelectorAll(".preset-btn").forEach((btn) => {
+          const pName = btn.getAttribute("data-preset");
+          btn.classList.toggle("active", state.preset === pName);
+        });
+
+        const totalSAR = Math.round(totalBudget * 3.75).toLocaleString("en-US");
+        document.getElementById("total-budget-pill").textContent = `Total: ${fmtUSD(totalBudget)}`;
+        document.getElementById("budget-sar-badge").textContent = `≈ ${totalSAR} SAR Total`;
+
+        // Funding calculations
+        const monthly = Math.max(0, Number(state.funding.monthlySetAside) || 0);
+        const sprints = Math.max(0, Number(state.funding.remoteSprints) || 0);
+        const stipend = Math.max(0, Number(state.funding.communityStipend) || 0);
+
+        document.getElementById("fund-monthly").value = monthly;
+        document.getElementById("fund-sprints").value = sprints;
+        document.getElementById("fund-stipend").value = stipend;
+
+        const bucketATotal = monthly * 9;
+        document.getElementById("bucket-a-total").textContent = fmtUSD(bucketATotal);
+
+        const projectedTotal = bucketATotal + sprints + stipend;
+        const monthlyNeeded = Math.ceil(totalBudget / 9);
+        const gap = totalBudget - projectedTotal;
+
+        document.getElementById("sum-target").textContent = fmtUSD(totalBudget);
+        document.getElementById("sum-projected").textContent = fmtUSD(projectedTotal);
+        document.getElementById("sum-monthly-needed").textContent = `${fmtUSD(monthlyNeeded)} / mo`;
+
+        const gapLabel = document.getElementById("sum-gap-label");
+        const gapVal = document.getElementById("sum-gap");
+        if (gap <= 0) {
+          gapLabel.textContent = "Funding Surplus:";
+          gapVal.textContent = `+${fmtUSD(Math.abs(gap))} (100% Covered!)`;
+          gapVal.style.color = "#86efac";
+        } else {
+          gapLabel.textContent = "Remaining Funding Gap:";
+          gapVal.textContent = `${fmtUSD(gap)} (~${fmtUSD(Math.ceil(gap / 9))}/mo extra)`;
+          gapVal.style.color = "#fca5a5";
+        }
+
+        // Update Top KPI Card for Funding
+        const savingsPct = totalBudget > 0 ? Math.min(100, Math.round((projectedTotal / totalBudget) * 100)) : 100;
+        document.getElementById("kpi-savings").textContent = `${fmtUSD(projectedTotal)} / ${fmtUSD(totalBudget)}`;
+        document.getElementById("kpi-savings-pct").textContent = `${savingsPct}%`;
+        document.getElementById("bar-savings").style.width = `${savingsPct}%`;
+        document.getElementById("kpi-savings-sub").textContent = `${fmtUSD(monthlyNeeded)}/mo baseline over 9 months`;
+
+        return { totalBudget, projectedTotal, savingsPct };
+      }
+
+      function renderUtilityAndRhythm() {
+        // Utility path toggle buttons
+        document.querySelectorAll(".utility-btn").forEach((btn) => {
+          btn.classList.toggle("active", btn.getAttribute("data-utility") === state.utilityPath);
+        });
+
+        const uData = UTILITY_PATHS[state.utilityPath] || UTILITY_PATHS.tajwid;
+        const uPanel = document.getElementById("utility-detail-panel");
+        uPanel.innerHTML = `
+          <div class="u-col">
+            <h4>1. What You Earn in Madinah</h4>
+            <p>${uData.earn}</p>
+          </div>
+          <div class="u-col">
+            <h4>2. How You Give Back at Home</h4>
+            <p>${uData.serve}</p>
+          </div>
+          <div class="u-col">
+            <h4>3. Recommended Budget Fit</h4>
+            <p>${uData.fit}</p>
+          </div>
+        `;
+
+        // Rhythm mode toggle buttons
+        document.querySelectorAll(".rhythm-pill").forEach((btn) => {
+          btn.classList.toggle("active", btn.getAttribute("data-rhythm") === state.rhythmMode);
+        });
+
+        const slots = RHYTHMS[state.rhythmMode] || RHYTHMS.hybrid;
+        const timeline = document.getElementById("rhythm-timeline");
+        timeline.innerHTML = "";
+
+        slots.forEach((slot) => {
+          const div = document.createElement("div");
+          div.className = "timeline-slot" + (slot.spineCare ? " spine-care" : "");
+          div.innerHTML = `
+            <div class="slot-time">${slot.time}</div>
+            <div>
+              <div class="slot-title">${slot.title}</div>
+              <div class="slot-desc">${slot.desc}</div>
+            </div>
+          `;
+          timeline.appendChild(div);
+        });
+      }
+
+      function renderTabs() {
+        const active = state.activeTab || "all";
+        document.querySelectorAll(".tab-btn").forEach((btn) => {
+          const isMatch = btn.getAttribute("data-tab") === active;
+          btn.classList.toggle("active", isMatch);
+          btn.setAttribute("aria-selected", isMatch ? "true" : "false");
+        });
+
+        const sections = {
+          prep: document.getElementById("module-prep"),
+          budget: document.getElementById("module-budget"),
+          utility: document.getElementById("module-utility")
+        };
+
+        Object.entries(sections).forEach(([key, el]) => {
+          if (!el) return;
+          if (active === "all" || active === key) {
+            el.classList.remove("hidden");
+          } else {
+            el.classList.add("hidden");
+          }
+        });
+      }
+
+      function renderAll() {
+        renderTabs();
+        renderTuhfah();
+        const { taskPct } = renderTasks();
+        const { savingsPct } = renderBudgetAndFunding();
+        renderUtilityAndRhythm();
+        updateCountdown();
+
+        // Weighted Overall Readiness Score: Funding (40%), Tuhfah (30%), Prep Tasks (30%)
+        const tuhfahPct = (state.tuhfahLines / 61) * 100;
+        const readiness = Math.round((savingsPct * 0.4) + (tuhfahPct * 0.3) + (taskPct * 0.3));
+
+        document.getElementById("kpi-readiness").textContent = `${readiness}%`;
+        document.getElementById("bar-readiness").style.width = `${readiness}%`;
+
+        let readinessTag = "Starting";
+        if (readiness >= 90) readinessTag = "Ready to Fly!";
+        else if (readiness >= 65) readinessTag = "Strong Momentum";
+        else if (readiness >= 35) readinessTag = "In Motion";
+        document.getElementById("kpi-readiness-tag").textContent = readinessTag;
+      }
+
+      // ======================================================================
+      // EVENT BINDINGS
+      // ======================================================================
+      function bindEvents() {
+        // Navigation tabs
+        document.querySelectorAll(".tab-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            state.activeTab = btn.getAttribute("data-tab");
+            saveState();
+            renderTabs();
+          });
+        });
+
+        // Tuhfat al-Atfal step buttons (-5, -1, +1, +5)
+        document.querySelectorAll(".step-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const delta = Number(btn.getAttribute("data-delta")) || 0;
+            state.tuhfahLines = Math.max(0, Math.min(61, state.tuhfahLines + delta));
+            saveState();
+            renderAll();
+            if (state.tuhfahLines === 61) {
+              showToast("Masha'Allah! All 61 lines of Tuhfat al-Atfal complete!");
+            }
+          });
+        });
+
+        // Tuhfat al-Atfal range slider
+        document.getElementById("tuhfah-slider").addEventListener("input", (e) => {
+          state.tuhfahLines = Number(e.target.value) || 0;
+          saveState();
+          renderAll();
+        });
+
+        // Milestone quick-jump buttons
+        document.querySelectorAll(".milestone-chip").forEach((chip) => {
+          chip.addEventListener("click", () => {
+            const target = Number(chip.getAttribute("data-jump")) || 0;
+            state.tuhfahLines = target;
+            saveState();
+            renderAll();
+            showToast(`Updated Tuhfat al-Atfal progress to ${target} / 61 lines.`);
+          });
+        });
+
+        // Budget Preset Scenario Buttons
+        document.querySelectorAll(".preset-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const presetKey = btn.getAttribute("data-preset");
+            if (BUDGET_PRESETS[presetKey]) {
+              state.preset = presetKey;
+              state.costs = { ...BUDGET_PRESETS[presetKey] };
+              saveState();
+              renderAll();
+              showToast(`Applied "${btn.querySelector(".preset-name").textContent}" budget.`);
+            }
+          });
+        });
+
+        // Budget Cost Sliders
+        const costKeys = ["flight", "visa", "rent", "food", "tutor", "transit", "buffer"];
+        costKeys.forEach((key) => {
+          const el = document.getElementById(`cost-${key}`);
+          if (!el) return;
+          el.addEventListener("input", (e) => {
+            state.costs[key] = Number(e.target.value) || 0;
+            state.preset = "custom";
+            saveState();
+            renderAll();
+          });
+        });
+
+        // Funding Tracker Inputs
+        document.getElementById("fund-monthly").addEventListener("input", (e) => {
+          state.funding.monthlySetAside = Math.max(0, Number(e.target.value) || 0);
+          saveState();
+          renderAll();
+        });
+
+        document.getElementById("fund-sprints").addEventListener("input", (e) => {
+          state.funding.remoteSprints = Math.max(0, Number(e.target.value) || 0);
+          saveState();
+          renderAll();
+        });
+
+        document.getElementById("fund-stipend").addEventListener("input", (e) => {
+          state.funding.communityStipend = Math.max(0, Number(e.target.value) || 0);
+          saveState();
+          renderAll();
+        });
+
+        // Community Utility Path Toggle
+        document.querySelectorAll(".utility-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            state.utilityPath = btn.getAttribute("data-utility");
+            saveState();
+            renderUtilityAndRhythm();
+          });
+        });
+
+        // Spine-Smart Rhythm Toggle
+        document.querySelectorAll(".rhythm-pill").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            state.rhythmMode = btn.getAttribute("data-rhythm");
+            saveState();
+            renderUtilityAndRhythm();
+          });
+        });
+
+        // Export Progress JSON
+        document.getElementById("btn-export").addEventListener("click", () => {
+          const payload = {
+            exportedAt: new Date().toISOString(),
+            project: "Madinah 2027: Mission Control",
+            data: state
+          };
+          const jsonStr = JSON.stringify(payload, null, 2);
+
+          // Download as .json file
+          const blob = new Blob([jsonStr], { type: "application/json" });
+          const url = URL.createObjectURL(blob);
+          const a = document.createElement("a");
+          a.href = url;
+          a.download = "madinah-2027-mission-control.json";
+          document.body.appendChild(a);
+          a.click();
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+
+          // Also copy to clipboard using safe execCommand fallback
+          try {
+            const ta = document.createElement("textarea");
+            ta.value = jsonStr;
+            ta.style.position = "fixed";
+            ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand("copy");
+            document.body.removeChild(ta);
+          } catch (_) {
+            // File download already succeeded
+          }
+
+          showToast("Exported madinah-2027-mission-control.json!");
+        });
+
+        // Reset Defaults Modal Handlers
+        const modal = document.getElementById("reset-modal");
+        document.getElementById("btn-reset").addEventListener("click", () => {
+          modal.classList.add("open");
+        });
+
+        document.getElementById("modal-cancel").addEventListener("click", () => {
+          modal.classList.remove("open");
+        });
+
+        modal.addEventListener("click", (e) => {
+          if (e.target === modal) modal.classList.remove("open");
+        });
+
+        document.getElementById("modal-confirm-reset").addEventListener("click", () => {
+          state = createDefaultState();
+          saveState();
+          renderAll();
+          modal.classList.remove("open");
+          showToast("Mission Control reset to default values.");
+        });
+      }
+
+      // Initialize application on DOM load
+      document.addEventListener("DOMContentLoaded", () => {
+        bindEvents();
+        renderAll();
+        setInterval(updateCountdown, 1000);
+      });
+    })();
+  </script>
+</body>
+</html>
