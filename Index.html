@@ -257,9 +257,9 @@
       }
     }
 
-    @media (min-width: 960px) {
+    @media (min-width: 1100px) {
       .kpi-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(5, 1fr);
       }
     }
 
@@ -288,7 +288,8 @@
     }
 
     .kpi-value {
-      font-size: 1.55rem;
+      overflow-wrap: anywhere;
+      font-size: 1.4rem;
       font-weight: 800;
       color: var(--emerald-900);
       font-variant-numeric: tabular-nums;
@@ -1147,6 +1148,206 @@
     }
 
     /* ==========================================================================
+       DAILY CHECK-IN, DEPARTURE WINDOW, HEALTH HOLD, AL-JAZARIYYAH SEGMENTS
+       ========================================================================== */
+    .card-hint {
+      font-size: 0.86rem;
+      color: var(--ink-secondary);
+      margin-bottom: 14px;
+    }
+
+    .daytype-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 10px;
+    }
+
+    @media (min-width: 640px) {
+      .daytype-grid {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    .daytype-btn {
+      appearance: none;
+      text-align: left;
+      background: var(--bg-sandstone);
+      border: 2px solid var(--border-stone);
+      border-radius: var(--radius-md);
+      padding: 14px 16px;
+      min-height: 44px;
+      cursor: pointer;
+      font-family: inherit;
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      transition: all 0.2s ease;
+    }
+
+    .daytype-btn:hover {
+      border-color: var(--emerald-700);
+    }
+
+    .daytype-btn.active {
+      background: var(--emerald-900);
+      border-color: var(--emerald-900);
+      color: #ffffff;
+    }
+
+    .daytype-btn[data-daytype="rest"].active {
+      background: var(--gold-600);
+      border-color: var(--gold-600);
+    }
+
+    .dt-title {
+      font-weight: 800;
+      font-size: 0.94rem;
+    }
+
+    .dt-sub {
+      font-size: 0.78rem;
+      color: var(--ink-secondary);
+    }
+
+    .daytype-btn.active .dt-sub {
+      color: rgba(255, 255, 255, 0.86);
+    }
+
+    .streak-dots {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+      margin-top: 14px;
+    }
+
+    .streak-dot {
+      width: 22px;
+      height: 22px;
+      border-radius: 50%;
+      background: var(--bg-sandstone-deep);
+      border: 1px solid var(--border-stone-strong);
+    }
+
+    .streak-dot.full {
+      background: var(--emerald-800);
+      border-color: var(--emerald-900);
+    }
+
+    .streak-dot.min {
+      background: var(--emerald-100);
+      border-color: var(--emerald-700);
+    }
+
+    .streak-dot.rest {
+      background: var(--gold-100);
+      border-color: var(--gold-500);
+    }
+
+    .streak-dot.today {
+      outline: 2px solid var(--gold-500);
+      outline-offset: 2px;
+    }
+
+    .streak-legend {
+      font-size: 0.74rem;
+      color: var(--ink-muted);
+      margin-left: 8px;
+    }
+
+    .date-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 12px;
+      align-items: end;
+    }
+
+    @media (min-width: 768px) {
+      .date-grid {
+        grid-template-columns: 1fr 1fr auto;
+      }
+    }
+
+    .date-field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      font-size: 0.84rem;
+      font-weight: 600;
+      color: var(--ink-secondary);
+    }
+
+    .date-field input[type="date"] {
+      font-family: inherit;
+      font-size: 0.95rem;
+      padding: 8px 10px;
+      min-height: 42px;
+      border: 1px solid var(--border-stone-strong);
+      border-radius: var(--radius-sm);
+      background: var(--bg-sandstone);
+      color: var(--ink-primary);
+    }
+
+    .hold-toggle {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin-top: 16px;
+      padding: 12px 14px;
+      border-radius: var(--radius-md);
+      background: var(--gold-50);
+      border: 1px solid var(--gold-100);
+      cursor: pointer;
+      font-size: 0.86rem;
+    }
+
+    .hold-toggle input {
+      width: 20px;
+      height: 20px;
+      min-width: 20px;
+      margin-top: 2px;
+      accent-color: var(--gold-600);
+    }
+
+    .hold-banner {
+      background: var(--gold-50);
+      border: 1px solid var(--gold-100);
+      border-left: 4px solid var(--gold-500);
+      border-radius: var(--radius-md);
+      padding: 12px 16px;
+      margin-bottom: 16px;
+      font-size: 0.88rem;
+      color: var(--ink-primary);
+    }
+
+    .hold-banner.hidden {
+      display: none;
+    }
+
+    .cd-checkpoint {
+      margin-top: 10px;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.16);
+      font-size: 0.74rem;
+      color: var(--gold-100);
+      text-align: center;
+    }
+
+    .jazari-segments {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 4px;
+      margin: 14px 0;
+    }
+
+    @media (min-width: 768px) {
+      .jazari-segments {
+        grid-template-columns: repeat(109, 1fr);
+        gap: 2px;
+      }
+    }
+
+    /* ==========================================================================
        CUSTOM MODAL & TOAST (Zero native alert/confirm)
        ========================================================================== */
     .modal-backdrop {
@@ -1251,9 +1452,9 @@
         </div>
 
         <!-- Live Countdown to September 1, 2027 -->
-        <div class="countdown-box" aria-label="Countdown to September 1, 2027">
+        <div class="countdown-box" aria-label="Countdown to departure target">
           <div class="countdown-label">
-            <span>Departure Target: Sept 1, 2027</span>
+            <span id="cd-target-label">Departure Target: Sept 1, 2027</span>
             <span id="cd-weeks-badge">-- Weeks</span>
           </div>
           <div class="countdown-grid">
@@ -1274,6 +1475,7 @@
               <span class="cd-text">Secs</span>
             </div>
           </div>
+          <div class="cd-checkpoint" id="cd-checkpoint"></div>
         </div>
       </div>
 
@@ -1286,7 +1488,7 @@
           </div>
           <div class="kpi-value" id="kpi-readiness">0%</div>
           <div class="mini-bar"><div class="mini-bar-fill" id="bar-readiness" style="width: 0%"></div></div>
-          <div class="kpi-sub">Weighted: Funding (40%), Tuhfah (30%), Prep (30%)</div>
+          <div class="kpi-sub">Weighted: Funding (30%), Tuhfah (25%), Jazariyyah (25%), Prep (20%)</div>
         </div>
 
         <div class="kpi-card">
@@ -1311,6 +1513,16 @@
 
         <div class="kpi-card">
           <div class="kpi-header">
+            <span>Al-Jazariyyah</span>
+            <span id="kpi-jazari-badge">Q1</span>
+          </div>
+          <div class="kpi-value" id="kpi-jazari">0 / 109 Lines</div>
+          <div class="mini-bar"><div class="mini-bar-fill" id="bar-jazari" style="width: 0%"></div></div>
+          <div class="kpi-sub" id="kpi-jazari-pace">Starts Mar 2027</div>
+        </div>
+
+        <div class="kpi-card">
+          <div class="kpi-header">
             <span>Prep Milestones</span>
             <span id="kpi-tasks-count">0 / 12</span>
           </div>
@@ -1329,7 +1541,7 @@
     <div class="container control-bar-inner">
       <div class="nav-tabs" role="tablist">
         <button class="tab-btn active" role="tab" aria-selected="true" data-tab="all">All Modules</button>
-        <button class="tab-btn" role="tab" aria-selected="false" data-tab="prep">1. Prep &amp; Tuhfah</button>
+        <button class="tab-btn" role="tab" aria-selected="false" data-tab="prep">1. Prep &amp; Poems</button>
         <button class="tab-btn" role="tab" aria-selected="false" data-tab="budget">2. Budget &amp; Funding</button>
         <button class="tab-btn" role="tab" aria-selected="false" data-tab="utility">3. Utility &amp; Spine Rhythm</button>
       </div>
@@ -1357,9 +1569,55 @@
       <div class="section-heading">
         <div class="section-title-group">
           <h2>1. 9-Month Prep &amp; <span class="arabic">تُحْفَةُ الأَطْفَال</span> Tracker</h2>
-          <p>Arrive in Madinah with all 61 lines memorized so you can test for <span class="arabic">إِجَازَة</span> in Week 1.</p>
+          <p>Arrive in Madinah with both poems memorized (about 170 lines) so you can start reciting for <span class="arabic">إِجَازَة</span> to a certified <span class="arabic">مُقْرِئ</span> right away.</p>
         </div>
         <span class="pill-badge emerald" id="tuhfah-percent-pill">0% Memorized</span>
+      </div>
+
+      <!-- Daily Check-In (minimum day + rest day protect the streak) -->
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="card-header">
+          <div class="card-title">Today's Check-In</div>
+          <span class="pill-badge emerald" id="streak-pill">0-day streak</span>
+        </div>
+        <p class="card-hint">Any honest check-in keeps your streak alive, including a minimum day or a rest day. A flare-up never breaks it.</p>
+        <div class="daytype-grid" role="group" aria-label="Log today">
+          <button type="button" class="daytype-btn" data-daytype="full">
+            <span class="dt-title">Full day</span>
+            <span class="dt-sub">Your planned walk and new line(s)</span>
+          </button>
+          <button type="button" class="daytype-btn" data-daytype="min">
+            <span class="dt-title">Minimum day</span>
+            <span class="dt-sub">One line, listened to once</span>
+          </button>
+          <button type="button" class="daytype-btn" data-daytype="rest">
+            <span class="dt-title">Rest day</span>
+            <span class="dt-sub">Flare or recovery. Streak protected.</span>
+          </button>
+        </div>
+        <div class="streak-dots" id="streak-dots" aria-label="Last 14 days"></div>
+      </div>
+
+      <!-- Departure Window & Go / No-Go Checkpoint -->
+      <div class="card" style="margin-bottom: 20px;">
+        <div class="card-header">
+          <div class="card-title">Departure Window &amp; Go / No-Go Checkpoint</div>
+          <span class="pill-badge" id="checkpoint-pill">--</span>
+        </div>
+        <p class="card-hint">The date is a target, not a deadline. At the checkpoint, ask honestly: Is my body on track? Are both poems on pace? Is the baseline funding set aside? If yes, go. If not, slide the whole window and lose nothing.</p>
+        <div class="date-grid">
+          <label class="date-field" for="date-departure">Departure target
+            <input type="date" id="date-departure" />
+          </label>
+          <label class="date-field" for="date-checkpoint">Go / No-Go checkpoint
+            <input type="date" id="date-checkpoint" />
+          </label>
+          <button type="button" class="action-btn" id="btn-slide-year">Slide window +1 year</button>
+        </div>
+        <label class="hold-toggle" for="health-hold">
+          <input type="checkbox" id="health-hold" />
+          <span>Health hold: pause non-refundable bookings (flight, visa, deposits) until follow-up care is cleared.</span>
+        </label>
       </div>
 
       <!-- Interactive Tuhfat al-Atfal Counter Card -->
@@ -1411,6 +1669,56 @@
         </div>
       </div>
 
+      <!-- Al-Muqaddimah al-Jazariyyah Tracker -->
+      <div class="card" style="margin-top: 20px;">
+        <div class="card-header">
+          <div class="card-title">
+            <span><span class="arabic">اَلْمُقَدِّمَةُ الجَزَرِيَّة</span> Lines Memorized (0 – 109)</span>
+          </div>
+          <span class="pill-badge" id="jazari-milestone-pill">Quarter 1 (Lines 1–27)</span>
+        </div>
+        <p class="card-hint">Phase 2 (Mar – Jul 2027): about 5–6 lines a week on your walks, alongside an English–Arabic line-by-line guide. Editions count 107–109 lines; this tracker uses 109, so treat the last couple as flexible.</p>
+
+        <div class="tuhfah-controls">
+          <div class="counter-btn-group">
+            <button class="step-btn jz-step" type="button" data-delta="-5" aria-label="Subtract 5 lines">-5</button>
+            <button class="step-btn jz-step" type="button" data-delta="-1" aria-label="Subtract 1 line">-1</button>
+            <button class="step-btn jz-step" type="button" data-delta="1" aria-label="Add 1 line">+1</button>
+            <button class="step-btn jz-step" type="button" data-delta="5" aria-label="Add 5 lines">+5</button>
+          </div>
+
+          <div class="range-wrapper">
+            <label for="jazari-slider" style="font-size: 0.84rem; font-weight: 600; color: var(--ink-secondary);">
+              Slide or click any block below to set exact line count: <strong id="jazari-slider-val" style="color: var(--emerald-900);">0</strong> / 109
+            </label>
+            <input type="range" id="jazari-slider" min="0" max="109" value="0" />
+          </div>
+        </div>
+
+        <p class="card-hint" id="jazari-pace-note"></p>
+
+        <div class="jazari-segments" id="jazari-segments" aria-label="109 lines visual progress bar"></div>
+
+        <div class="milestone-chips">
+          <button type="button" class="milestone-chip" id="jz-ms-1" data-jjump="27">
+            <span class="ms-title">Quarter 1 (Lines 1–27)</span>
+            <span class="ms-status">Target: Line 27</span>
+          </button>
+          <button type="button" class="milestone-chip" id="jz-ms-2" data-jjump="55">
+            <span class="ms-title">Quarter 2 (Lines 28–55)</span>
+            <span class="ms-status">Target: Line 55</span>
+          </button>
+          <button type="button" class="milestone-chip" id="jz-ms-3" data-jjump="82">
+            <span class="ms-title">Quarter 3 (Lines 56–82)</span>
+            <span class="ms-status">Target: Line 82</span>
+          </button>
+          <button type="button" class="milestone-chip ijazah-gold" id="jz-ms-4" data-jjump="109">
+            <span class="ms-title">Quarter 4 (Lines 83–109)</span>
+            <span class="ms-status">Ready to recite for ijazah!</span>
+          </button>
+        </div>
+      </div>
+
       <!-- 3-Phase Checkable Prep Roadmap -->
       <div class="phases-grid">
         <!-- Phase 1 -->
@@ -1422,15 +1730,15 @@
 
         <!-- Phase 2 -->
         <div class="phase-card">
-          <span class="phase-tag">Phase 2 • Mar 2027 – May 2027</span>
-          <h3 class="phase-title">Repair Nahw &amp; Sarf Roots &amp; Verb Forms</h3>
+          <span class="phase-tag">Phase 2 • Mar 2027 – Jul 2027</span>
+          <h3 class="phase-title">Al-Jazariyyah &amp; Relaxed Nahw / Sarf Review</h3>
           <ul class="task-list" id="tasks-phase-2"></ul>
         </div>
 
         <!-- Phase 3 -->
         <div class="phase-card">
-          <span class="phase-tag">Phase 3 • Jun 2027 – Aug 2027</span>
-          <h3 class="phase-title">Spoken Ear, Teacher Outreach &amp; Logistics</h3>
+          <span class="phase-tag">Phase 3 • Aug 2027</span>
+          <h3 class="phase-title">Chant Both Poems, Spoken Ear &amp; Logistics</h3>
           <ul class="task-list" id="tasks-phase-3"></ul>
         </div>
       </div>
@@ -1449,22 +1757,26 @@
       </div>
 
       <div class="card">
+        <div class="hold-banner" id="hold-banner">
+          <strong>Health hold is on.</strong> Keep the flight, visa and deposits unbooked until your follow-up care is cleared. Saving and memorizing carry on as normal. You can switch this off in section 1.
+        </div>
+
         <!-- Preset Scenario Buttons -->
         <div class="preset-bar" role="group" aria-label="Budget Scenario Presets">
           <button type="button" class="preset-btn active" data-preset="lean">
-            <span class="preset-name">Lean / Teacher-Connected</span>
-            <span class="preset-price">$3,050 all-in</span>
-            <span class="preset-desc">Free Masjid an-Nabawi Muqri'ah + teacher/family network guidance; zero private tutor cost.</span>
+            <span class="preset-name">Tier 1: Lean Ijazah-First</span>
+            <span class="preset-price">~$3,150 all-in</span>
+            <span class="preset-desc">Quba studio, local meals, golf carts and SIM, free Haram Muqri'ah + evening halaqat. $0 paid tutoring.</span>
           </button>
           <button type="button" class="preset-btn" data-preset="hybrid">
-            <span class="preset-name">Balanced 70/30 Hybrid</span>
-            <span class="preset-price">$4,350 all-in</span>
-            <span class="preset-desc">Free Muqri'ah for Tuhfah/Hafs + 3x/week grad tutor for Ajurrumiyyah &amp; Bina' al-Af'al.</span>
+            <span class="preset-name">Tier 2: Hybrid / Referred Tutor</span>
+            <span class="preset-price">~$4,050 all-in</span>
+            <span class="preset-desc">Tier 1 + about 3 hrs/week of 1-on-1 tutoring, or a discounted rate through your teacher's Madinah contacts.</span>
           </button>
           <button type="button" class="preset-btn" data-preset="bootcamp">
-            <span class="preset-name">Full 1-on-1 Bootcamp</span>
-            <span class="preset-price">$5,050 all-in</span>
-            <span class="preset-desc">5x/week private tutor + Quba studio + full spine-comfort golf-cart budget.</span>
+            <span class="preset-name">Tier 3: Full 1-on-1 Intensive</span>
+            <span class="preset-price">~$5,015 all-in</span>
+            <span class="preset-desc">Tier 1 + 1.5–2 hrs/day, 5 days a week of 1-on-1 grammar and morphology at about 65 SAR/hr.</span>
           </button>
         </div>
 
@@ -1486,7 +1798,7 @@
 
             <div class="slider-row">
               <div class="slider-meta">
-                <label class="slider-label" for="cost-visa">Saudi Tourist eVisa (90-Day Single Stay)</label>
+                <label class="slider-label" for="cost-visa">Saudi Tourist eVisa + Insurance (90-Day Stay)</label>
                 <span class="slider-val" id="val-visa">$110</span>
               </div>
               <input type="range" id="cost-visa" min="90" max="160" step="5" value="110" />
@@ -1562,7 +1874,7 @@
               <div class="bucket-top">
                 <div>
                   <div class="bucket-title">(b) Low-Impact Remote / Skill Sprints</div>
-                  <div class="bucket-hint">Spine-safe desk/remote micro-projects over 9 mos</div>
+                  <div class="bucket-hint">Short spine-safe digital micro-projects over 9 mos (capped seated blocks, no crunch deadlines)</div>
                 </div>
                 <div class="number-input-wrap">
                   <span>$</span>
@@ -1576,11 +1888,25 @@
               <div class="bucket-top">
                 <div>
                   <div class="bucket-title">(c) Masjid / Teacher / Community Stipend</div>
-                  <div class="bucket-hint">Sponsorship from those investing in your return service</div>
+                  <div class="bucket-hint">Optional upgrade for tutoring only, not part of the baseline</div>
                 </div>
                 <div class="number-input-wrap">
                   <span>$</span>
                   <input type="number" id="fund-stipend" min="0" max="10000" step="25" value="800" aria-label="Masjid or community study stipend in dollars" />
+                </div>
+              </div>
+            </div>
+
+            <!-- Actual savings -->
+            <div class="bucket-card">
+              <div class="bucket-top">
+                <div>
+                  <div class="bucket-title">Saved So Far (actual)</div>
+                  <div class="bucket-hint">What is in your ring-fenced account today</div>
+                </div>
+                <div class="number-input-wrap">
+                  <span>$</span>
+                  <input type="number" id="fund-saved" min="0" max="20000" step="25" value="0" aria-label="Amount saved so far in dollars" />
                 </div>
               </div>
             </div>
@@ -1594,6 +1920,10 @@
               <div class="fund-stat-row">
                 <span>9-Month Projected Funding (a + b + c):</span>
                 <strong id="sum-projected" style="color: #fde68a;">$3,050</strong>
+              </div>
+              <div class="fund-stat-row">
+                <span>Actually Saved So Far:</span>
+                <strong id="sum-saved">$0</strong>
               </div>
               <div class="fund-stat-row">
                 <span>Baseline Monthly Target (÷ 9 mos):</span>
@@ -1657,7 +1987,7 @@
           </div>
         </div>
         <p style="font-size: 0.85rem; color: var(--ink-secondary);">
-          Designed for a 50-year-old student healing from spine surgery: zero long marches on hard marble, lumbar-supported seating, midday horizontal decompression, and 10 SAR electric golf carts between Quba and the Haram.
+          Designed for a 50-year-old student protecting his spine through conservative care: no marathon sitting, no unsupported sitting on hard marble, lumbar-supported seating, midday horizontal rest, steady low-impact walking, and 10 SAR electric golf carts between Quba and the Haram when his back needs a break.
         </p>
 
         <div class="timeline-list" id="rhythm-timeline">
@@ -1678,7 +2008,7 @@
   <div class="modal-backdrop" id="reset-modal" role="dialog" aria-modal="true" aria-labelledby="reset-modal-title">
     <div class="modal-box">
       <h3 id="reset-modal-title">Reset Mission Control to Defaults?</h3>
-      <p>This will clear your saved Tuhfat al-Atfal line count, checked prep tasks, and custom budget numbers in this browser. Consider exporting a JSON backup first.</p>
+      <p>This will clear your saved Tuhfat al-Atfal and al-Jazariyyah line counts, daily check-ins, dates, checked prep tasks, and custom budget numbers in this browser. Consider exporting a JSON backup first.</p>
       <div class="modal-actions">
         <button type="button" class="action-btn" id="modal-cancel">Cancel</button>
         <button type="button" class="action-btn danger" id="modal-confirm-reset">Yes, Reset Everything</button>
@@ -1697,77 +2027,90 @@
       "use strict";
 
       const STORAGE_KEY = "madinah_2027_mission_control_v1";
-      const DEPARTURE_DATE = new Date("2027-09-01T00:00:00");
+      const DEFAULT_DATES = { departure: "2027-09-01", checkpoint: "2027-06-01" };
+      const DEFAULT_PHASES = {
+        tuhfahStart: "2026-12-01",
+        tuhfahEnd: "2027-02-28",
+        jazariStart: "2027-03-01",
+        jazariEnd: "2027-07-31"
+      };
+      const JAZARI_TOTAL = 109;
+      const JAZARI_MILESTONES = [27, 55, 82, 109];
 
       // Default Task Lists across the 3 Pre-Departure Phases
       const DEFAULT_TASKS = {
         phase1: [
-          { id: "p1_1", text: "Set a spine-safe daily 20-min audio + recitation routine (reclined or lumbar-supported, zero strain).", done: false },
-          { id: "p1_2", text: "Memorize Lines 1–30 of Tuhfat al-Atfal with Husary / Ayman Suwayd audio.", done: false },
+          { id: "p1_1", text: "Set a spine-safe daily 20-min audio + recitation routine (reclined or lumbar-supported, zero strain). On flare days, log a Minimum Day instead.", done: false },
+          { id: "p1_2", text: "Memorize Lines 1–30 of Tuhfat al-Atfal with Shaykh Ayman Suwayd / Sa'd al-Ghamdi audio (about 5 lines a week on your walks).", done: false },
           { id: "p1_3", text: "Complete Lines 31–61 of Tuhfat al-Atfal and recite all 61 lines cleanly without prompting.", done: false },
-          { id: "p1_4", text: "Speak with your teacher (3rd-gen Madinah roots) about your 90-day goal & ask for Madinah Muqri'/tutor advice.", done: false }
+          { id: "p1_4", text: "Have a low-pressure, service-focused conversation with your teacher: what teaching skill would help the masjid most, and does he recommend anyone in Madinah?", done: false },
+          { id: "p1_5", text: "Health check-in: confirm your follow-up tests are scheduled and ask whether any limits apply to your walking routine.", done: false }
         ],
         phase2: [
-          { id: "p2_1", text: "Drill the 10 Arabic verb forms (Al-Awzan) & 3-letter root extraction (Al-Judhur) 15 mins/day.", done: false },
-          { id: "p2_2", text: "Patch core Nahw foundations: Nominal vs. Verbal sentences and basic I'rab vowel signs.", done: false },
+          { id: "p2_5", text: "Memorize Al-Muqaddimah al-Jazariyyah (about 109 lines) at ~5–6 lines a week on your walks.", done: false },
+          { id: "p2_6", text: "Read an English–Arabic line-by-line guide to al-Jazariyyah alongside the memorization.", done: false },
+          { id: "p2_7", text: "Go / No-Go checkpoint: honestly review your body, both poems, and your savings. Go, or slide the window a year.", done: false },
+          { id: "p2_1", text: "Light, relaxed review of the 10 Arabic verb forms & 3-letter roots (bonus track, a few minutes a day).", done: false },
+          { id: "p2_2", text: "Patch core Nahw foundations: Nominal vs. Verbal sentences and basic I'rab vowel signs (relaxed pace).", done: false },
           { id: "p2_3", text: "Read through Bina' al-Af'al once with English notes so morphology terms feel familiar.", done: false },
-          { id: "p2_4", text: "Read through Matn al-Ajurrumiyyah chapter headings & core definitions before tutoring starts.", done: false }
+          { id: "p2_4", text: "Read through Matn al-Ajurrumiyyah chapter headings & core definitions before any tutoring starts.", done: false }
         ],
         phase3: [
+          { id: "p3_5", text: "Chant both poems (~170 lines) straight through and review ~25 core makharij / sifat terms.", done: false },
           { id: "p3_1", text: "Listen daily to Al-'Arabiyyah Bayna Yadayk dialogues while resting or walking to wake up spoken Arabic.", done: false },
-          { id: "p3_2", text: "Finalize Madinah tutor plan (teacher connection or IU graduate student near Quba Walkway).", done: false },
-          { id: "p3_3", text: "Apply for Saudi Tourist eVisa in early Aug 2027 (confirm 90-day continuous stay rule).", done: false },
-          { id: "p3_4", text: "Book ATL–MED flight (return Day 87–88) & 3-night starter hotel near Quba Walkway South.", done: false }
+          { id: "p3_2", text: "Finalize a Madinah tutor plan only if Tier 2/3 funding is raised or your teacher connects you with an affordable contact.", done: false },
+          { id: "p3_3", text: "After a Go decision and a cleared health hold: apply for the Saudi Tourist eVisa (confirm the 90-day continuous stay rule).", done: false },
+          { id: "p3_4", text: "After a Go decision and a cleared health hold: book the ATL–MED flight (return Day 87–88) and a 3–4 night starter hotel near Quba Walkway South.", done: false }
         ]
       };
 
-      // Budget Scenario Presets
+      // Budget Scenario Presets (Tier 1 / 2 / 3 from the plan)
       const BUDGET_PRESETS = {
         lean: {
-          flight: 850,
-          visa: 110,
-          rent: 950,
+          flight: 1150,
+          visa: 120,
+          rent: 900,
           food: 650,
           tutor: 0,
-          transit: 290,
-          buffer: 200
+          transit: 230,
+          buffer: 100
         },
         hybrid: {
-          flight: 850,
-          visa: 110,
-          rent: 1050,
-          food: 700,
-          tutor: 1140,
-          transit: 300,
-          buffer: 200
+          flight: 1150,
+          visa: 120,
+          rent: 900,
+          food: 650,
+          tutor: 900,
+          transit: 230,
+          buffer: 100
         },
         bootcamp: {
-          flight: 850,
-          visa: 110,
-          rent: 1075,
-          food: 700,
+          flight: 1150,
+          visa: 120,
+          rent: 950,
+          food: 650,
           tutor: 1815,
-          transit: 300,
-          buffer: 200
+          transit: 230,
+          buffer: 100
         }
       };
 
       // Community Utility Path Data
       const UTILITY_PATHS = {
         tajwid: {
-          earn: "Formal Ijazah with connected Sanad in Tuhfat al-Atfal (61 lines) + multiple Juz of Hafs 'an 'Asim recitation corrected by a certified Muqri' in Masjid an-Nabawi.",
+          earn: "Formal Ijazah with connected Sanad in Tuhfat al-Atfal (61 lines) and al-Muqaddimah al-Jazariyyah (about 109 lines), plus Hafs 'an 'Asim recitation (Juz' 'Amma, Juz' Tabarak and onward) corrected by a certified Muqri' in Masjid an-Nabawi.",
           serve: "Launch a structured 8-week 'Tajwid Foundations' circle for youth and new Muslims at your home Masjid—giving your Imam and teacher a reliable, credentialed instructor.",
-          fit: "Ideal for Lean ($3,050) or Balanced ($4,350) budgets because the Masjid an-Nabawi Muqri'ah is completely free."
+          fit: "Fits Tier 1 (~$3,150) because the Masjid an-Nabawi Muqri'ah is free and no paid tutoring is needed."
         },
         arabic: {
           earn: "Completed classical primers Matn al-Ajurrumiyyah (Nahw) and Bina' al-Af'al (Sarf) with live grammatical parsing (I'rab) of short Surahs.",
           serve: "Lead a weekly 'Understanding Salah & Juz 'Amma' reading workshop for converts and adult learners who want to move beyond phonetic transliteration.",
-          fit: "Best paired with the Balanced 70/30 Hybrid ($4,350) or Full Bootcamp ($5,050) budget for 1-on-1 grammar drilling."
+          fit: "Best paired with Tier 2 (~$4,050) or Tier 3 (~$5,015) for 1-on-1 grammar drilling. A funded bonus, not the baseline."
         },
         assistant: {
           earn: "Practical spoken Hijazi/Fusha Arabic (Al-'Arabiyyah Bayna Yadayk), Tuhfat al-Atfal Ijazah, and sitting notes from Masjid an-Nabawi beginner Mutun circles.",
           serve: "Serve as your teacher's right-hand TA for beginner review sessions, translate/assist visiting Arabic-speaking guests, and mentor new converts (15 yrs experience).",
-          fit: "Works smoothly on the Lean ($3,050) or Balanced ($4,350) budget through daily neighborhood & mosque immersion."
+          fit: "Works on Tier 1 (~$3,150) or Tier 2 (~$4,050) through daily neighborhood & mosque immersion."
         }
       };
 
@@ -1839,22 +2182,55 @@
         ]
       };
 
+      // Date helpers (local time)
+      function pad2(n) { return String(n).padStart(2, "0"); }
+      function dateKey(d) { return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
+      function parseDay(str, fallback) {
+        const d = new Date(String(str) + "T00:00:00");
+        if (isNaN(d.getTime())) return new Date(String(fallback) + "T00:00:00");
+        return d;
+      }
+      function addYears(str, n) {
+        const d = parseDay(str, DEFAULT_DATES.departure);
+        d.setFullYear(d.getFullYear() + n);
+        return dateKey(d);
+      }
+      function fmtDate(d) {
+        return d.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+      }
+
       // Default State Factory
       function createDefaultState() {
         return {
           activeTab: "all",
           tuhfahLines: 0,
+          jazariLines: 0,
           tasks: JSON.parse(JSON.stringify(DEFAULT_TASKS)),
           preset: "lean",
           costs: { ...BUDGET_PRESETS.lean },
           funding: {
-            monthlySetAside: 150,
-            remoteSprints: 900,
-            communityStipend: 800
+            monthlySetAside: 350,
+            remoteSprints: 0,
+            communityStipend: 0,
+            savedSoFar: 0
           },
           utilityPath: "tajwid",
-          rhythmMode: "hybrid"
+          rhythmMode: "hybrid",
+          departureDate: DEFAULT_DATES.departure,
+          checkpointDate: DEFAULT_DATES.checkpoint,
+          phases: { ...DEFAULT_PHASES },
+          healthHold: true,
+          dayLog: {}
         };
+      }
+
+      // Keep saved "done" flags by task id, but take task text/order from the current defaults
+      function mergeTasks(savedList, defaultList) {
+        const doneById = {};
+        (Array.isArray(savedList) ? savedList : []).forEach((t) => {
+          if (t && t.id) doneById[t.id] = !!t.done;
+        });
+        return defaultList.map((t) => ({ ...t, done: !!doneById[t.id] }));
       }
 
       // Load State safely from localStorage
@@ -1868,12 +2244,14 @@
             ...def,
             ...parsed,
             tasks: {
-              phase1: parsed.tasks?.phase1 || def.tasks.phase1,
-              phase2: parsed.tasks?.phase2 || def.tasks.phase2,
-              phase3: parsed.tasks?.phase3 || def.tasks.phase3
+              phase1: mergeTasks(parsed.tasks && parsed.tasks.phase1, def.tasks.phase1),
+              phase2: mergeTasks(parsed.tasks && parsed.tasks.phase2, def.tasks.phase2),
+              phase3: mergeTasks(parsed.tasks && parsed.tasks.phase3, def.tasks.phase3)
             },
             costs: { ...def.costs, ...(parsed.costs || {}) },
-            funding: { ...def.funding, ...(parsed.funding || {}) }
+            funding: { ...def.funding, ...(parsed.funding || {}) },
+            phases: { ...def.phases, ...(parsed.phases || {}) },
+            dayLog: (parsed.dayLog && typeof parsed.dayLog === "object") ? parsed.dayLog : {}
           };
         } catch (err) {
           console.warn("Could not read saved state, using defaults:", err);
@@ -1919,7 +2297,8 @@
       // ======================================================================
       function updateCountdown() {
         const now = new Date();
-        const diff = Math.max(0, DEPARTURE_DATE.getTime() - now.getTime());
+        const departure = parseDay(state.departureDate, DEFAULT_DATES.departure);
+        const diff = Math.max(0, departure.getTime() - now.getTime());
 
         const totalSeconds = Math.floor(diff / 1000);
         const days = Math.floor(totalSeconds / 86400);
@@ -1935,16 +2314,45 @@
         document.getElementById("cd-weeks-badge").textContent = weeks + " Weeks";
         document.getElementById("kpi-weeks").textContent = weeks + " Weeks";
 
-        // Update Tuhfat al-Atfal pace based on weeks remaining (targeting 2 weeks buffer before departure)
-        const studyWeeks = Math.max(1, weeks - 2);
-        const linesLeft = Math.max(0, 61 - state.tuhfahLines);
-        const paceEl = document.getElementById("kpi-tuhfah-pace");
-        if (linesLeft === 0) {
-          paceEl.textContent = "All 61 lines complete — polish fluency!";
-        } else {
-          const perWeek = (linesLeft / studyWeeks).toFixed(1);
-          paceEl.textContent = `~${perWeek} lines/week needed (${linesLeft} left)`;
-        }
+        document.getElementById("cd-target-label").textContent = "Departure Target: " + fmtDate(departure);
+        const cpInfo = checkpointText();
+        document.getElementById("cd-checkpoint").textContent =
+          "Go / No-Go checkpoint: " + fmtDate(parseDay(state.checkpointDate, DEFAULT_DATES.checkpoint)) + " · " + cpInfo;
+        const cpPill = document.getElementById("checkpoint-pill");
+        if (cpPill) cpPill.textContent = cpInfo;
+
+        updatePaces();
+      }
+
+      function checkpointText() {
+        const cp = parseDay(state.checkpointDate, DEFAULT_DATES.checkpoint);
+        const days = Math.ceil((cp.getTime() - Date.now()) / 86400000);
+        if (days > 0) return days + (days === 1 ? " day to go" : " days to go");
+        return "checkpoint is here: review honestly";
+      }
+
+      // Lines-per-week pace toward a phase end date (counted from the phase start if it has not begun)
+      function paceFor(linesLeft, startStr, endStr) {
+        const now = new Date();
+        const start = parseDay(startStr, DEFAULT_PHASES.tuhfahStart);
+        const end = parseDay(endStr, DEFAULT_PHASES.tuhfahEnd);
+        const notStarted = now < start;
+        const from = notStarted ? start : now;
+        const weeks = (end.getTime() - from.getTime()) / (7 * 86400000);
+        if (weeks <= 0) return linesLeft + " lines left. The target date has passed; adjust the window or the plan.";
+        const perWeek = (linesLeft / Math.max(1, weeks)).toFixed(1);
+        return (notStarted ? "Starts " + fmtDate(start) + " · " : "") + "~" + perWeek + " lines/week to finish by " + fmtDate(end) + " (" + linesLeft + " left)";
+      }
+
+      function updatePaces() {
+        const tLeft = Math.max(0, 61 - state.tuhfahLines);
+        document.getElementById("kpi-tuhfah-pace").textContent =
+          tLeft === 0 ? "All 61 lines complete. Polish fluency!" : paceFor(tLeft, state.phases.tuhfahStart, state.phases.tuhfahEnd);
+
+        const jLeft = Math.max(0, JAZARI_TOTAL - state.jazariLines);
+        const jText = jLeft === 0 ? "All 109 lines complete. Polish fluency!" : paceFor(jLeft, state.phases.jazariStart, state.phases.jazariEnd);
+        document.getElementById("kpi-jazari-pace").textContent = jText;
+        document.getElementById("jazari-pace-note").textContent = jText;
       }
 
       // ======================================================================
@@ -2016,6 +2424,110 @@
             statusEl.textContent = `Target: Line ${m.target} (${m.target - lines} away)`;
           }
         });
+      }
+
+      function renderJazari() {
+        const total = JAZARI_TOTAL;
+        const lines = Math.max(0, Math.min(total, Number(state.jazariLines) || 0));
+        state.jazariLines = lines;
+
+        const pct = Math.round((lines / total) * 100);
+        document.getElementById("jazari-slider").value = lines;
+        document.getElementById("jazari-slider-val").textContent = lines;
+        document.getElementById("kpi-jazari").textContent = `${lines} / ${total} Lines`;
+        document.getElementById("bar-jazari").style.width = `${pct}%`;
+
+        let stageLabel = "Quarter 1 (Lines 1–27)";
+        let shortBadge = "Q1";
+        if (lines >= total) {
+          stageLabel = "Complete! Ready to recite for ijazah";
+          shortBadge = "Complete";
+        } else if (lines >= 82) {
+          stageLabel = "Quarter 4 (Lines 83–109)";
+          shortBadge = "Q4";
+        } else if (lines >= 55) {
+          stageLabel = "Quarter 3 (Lines 56–82)";
+          shortBadge = "Q3";
+        } else if (lines >= 27) {
+          stageLabel = "Quarter 2 (Lines 28–55)";
+          shortBadge = "Q2";
+        }
+        document.getElementById("jazari-milestone-pill").textContent = stageLabel;
+        document.getElementById("kpi-jazari-badge").textContent = shortBadge;
+
+        const segContainer = document.getElementById("jazari-segments");
+        segContainer.innerHTML = "";
+        const ends = new Set(JAZARI_MILESTONES);
+        for (let i = 1; i <= total; i++) {
+          const tick = document.createElement("div");
+          tick.className = "line-tick" + (i <= lines ? " memorized" : "") + (ends.has(i) ? " milestone-end" : "");
+          tick.title = `Line ${i} of ${total} (click to set)`;
+          tick.setAttribute("role", "button");
+          tick.setAttribute("aria-label", `Set memorized lines to ${i}`);
+          tick.addEventListener("click", () => {
+            state.jazariLines = (state.jazariLines === i) ? i - 1 : i;
+            saveState();
+            renderAll();
+          });
+          segContainer.appendChild(tick);
+        }
+
+        JAZARI_MILESTONES.forEach((target, idx) => {
+          const el = document.getElementById("jz-ms-" + (idx + 1));
+          const statusEl = el.querySelector(".ms-status");
+          if (lines >= target) {
+            el.classList.add("unlocked");
+            statusEl.textContent = target === total ? "Unlocked: ready to recite!" : `Completed (Line ${target})`;
+          } else {
+            el.classList.remove("unlocked");
+            statusEl.textContent = `Target: Line ${target} (${target - lines} away)`;
+          }
+        });
+      }
+
+      function renderCheckin() {
+        const log = state.dayLog || {};
+        const todayKey = dateKey(new Date());
+
+        document.querySelectorAll(".daytype-btn").forEach((btn) => {
+          btn.classList.toggle("active", log[todayKey] === btn.getAttribute("data-daytype"));
+        });
+
+        // Streak: consecutive logged days ending today (or yesterday if today is not logged yet)
+        let streak = 0;
+        const cursor = new Date();
+        if (!log[dateKey(cursor)]) cursor.setDate(cursor.getDate() - 1);
+        while (log[dateKey(cursor)]) {
+          streak++;
+          cursor.setDate(cursor.getDate() - 1);
+        }
+        document.getElementById("streak-pill").textContent =
+          streak === 0 ? "Start today. A minimum day counts." : `${streak}-day streak`;
+
+        const dots = document.getElementById("streak-dots");
+        dots.innerHTML = "";
+        const names = { full: "Full day", min: "Minimum day", rest: "Rest day" };
+        for (let i = 13; i >= 0; i--) {
+          const day = new Date();
+          day.setDate(day.getDate() - i);
+          const key = dateKey(day);
+          const dot = document.createElement("span");
+          dot.className = "streak-dot" + (log[key] ? " " + log[key] : "") + (i === 0 ? " today" : "");
+          dot.title = key + (log[key] ? ": " + (names[log[key]] || log[key]) : ": not logged");
+          dots.appendChild(dot);
+        }
+        const legend = document.createElement("span");
+        legend.className = "streak-legend";
+        legend.textContent = "Last 14 days: dark = full, light = minimum, gold = rest";
+        dots.appendChild(legend);
+      }
+
+      function renderPlanControls() {
+        document.getElementById("date-departure").value = state.departureDate;
+        document.getElementById("date-checkpoint").value = state.checkpointDate;
+        document.getElementById("health-hold").checked = !!state.healthHold;
+        const banner = document.getElementById("hold-banner");
+        if (banner) banner.classList.toggle("hidden", !state.healthHold);
       }
 
       function renderTasks() {
@@ -2097,6 +2609,10 @@
         document.getElementById("fund-sprints").value = sprints;
         document.getElementById("fund-stipend").value = stipend;
 
+        const saved = Math.max(0, Number(state.funding.savedSoFar) || 0);
+        document.getElementById("fund-saved").value = saved;
+        document.getElementById("sum-saved").textContent = fmtUSD(saved);
+
         const bucketATotal = monthly * 9;
         document.getElementById("bucket-a-total").textContent = fmtUSD(bucketATotal);
 
@@ -2120,12 +2636,12 @@
           gapVal.style.color = "#fca5a5";
         }
 
-        // Update Top KPI Card for Funding
-        const savingsPct = totalBudget > 0 ? Math.min(100, Math.round((projectedTotal / totalBudget) * 100)) : 100;
-        document.getElementById("kpi-savings").textContent = `${fmtUSD(projectedTotal)} / ${fmtUSD(totalBudget)}`;
+        // Update Top KPI Card for Funding (actual savings vs. the selected budget)
+        const savingsPct = totalBudget > 0 ? Math.min(100, Math.round((saved / totalBudget) * 100)) : 100;
+        document.getElementById("kpi-savings").textContent = `${fmtUSD(saved)} / ${fmtUSD(totalBudget)}`;
         document.getElementById("kpi-savings-pct").textContent = `${savingsPct}%`;
         document.getElementById("bar-savings").style.width = `${savingsPct}%`;
-        document.getElementById("kpi-savings-sub").textContent = `${fmtUSD(monthlyNeeded)}/mo baseline over 9 months`;
+        document.getElementById("kpi-savings-sub").textContent = `Saved so far · ${fmtUSD(monthlyNeeded)}/mo baseline over 9 months`;
 
         return { totalBudget, projectedTotal, savingsPct };
       }
@@ -2203,14 +2719,18 @@
       function renderAll() {
         renderTabs();
         renderTuhfah();
+        renderJazari();
+        renderCheckin();
+        renderPlanControls();
         const { taskPct } = renderTasks();
         const { savingsPct } = renderBudgetAndFunding();
         renderUtilityAndRhythm();
         updateCountdown();
 
-        // Weighted Overall Readiness Score: Funding (40%), Tuhfah (30%), Prep Tasks (30%)
+        // Weighted Overall Readiness Score: Funding (30%), Tuhfah (25%), Jazariyyah (25%), Prep Tasks (20%)
         const tuhfahPct = (state.tuhfahLines / 61) * 100;
-        const readiness = Math.round((savingsPct * 0.4) + (tuhfahPct * 0.3) + (taskPct * 0.3));
+        const jazariPct = (state.jazariLines / JAZARI_TOTAL) * 100;
+        const readiness = Math.round((savingsPct * 0.3) + (tuhfahPct * 0.25) + (jazariPct * 0.25) + (taskPct * 0.2));
 
         document.getElementById("kpi-readiness").textContent = `${readiness}%`;
         document.getElementById("bar-readiness").style.width = `${readiness}%`;
@@ -2236,7 +2756,7 @@
         });
 
         // Tuhfat al-Atfal step buttons (-5, -1, +1, +5)
-        document.querySelectorAll(".step-btn").forEach((btn) => {
+        document.querySelectorAll(".step-btn:not(.jz-step)").forEach((btn) => {
           btn.addEventListener("click", () => {
             const delta = Number(btn.getAttribute("data-delta")) || 0;
             state.tuhfahLines = Math.max(0, Math.min(61, state.tuhfahLines + delta));
@@ -2256,7 +2776,7 @@
         });
 
         // Milestone quick-jump buttons
-        document.querySelectorAll(".milestone-chip").forEach((chip) => {
+        document.querySelectorAll(".milestone-chip[data-jump]").forEach((chip) => {
           chip.addEventListener("click", () => {
             const target = Number(chip.getAttribute("data-jump")) || 0;
             state.tuhfahLines = target;
@@ -2264,6 +2784,95 @@
             renderAll();
             showToast(`Updated Tuhfat al-Atfal progress to ${target} / 61 lines.`);
           });
+        });
+
+        // Al-Jazariyyah tracker
+        document.querySelectorAll(".jz-step").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const delta = Number(btn.getAttribute("data-delta")) || 0;
+            state.jazariLines = Math.max(0, Math.min(JAZARI_TOTAL, state.jazariLines + delta));
+            saveState();
+            renderAll();
+            if (state.jazariLines === JAZARI_TOTAL) {
+              showToast("Masha'Allah! All of al-Jazariyyah is memorized!");
+            }
+          });
+        });
+
+        document.getElementById("jazari-slider").addEventListener("input", (e) => {
+          state.jazariLines = Number(e.target.value) || 0;
+          saveState();
+          renderAll();
+        });
+
+        document.querySelectorAll(".milestone-chip[data-jjump]").forEach((chip) => {
+          chip.addEventListener("click", () => {
+            const target = Number(chip.getAttribute("data-jjump")) || 0;
+            state.jazariLines = target;
+            saveState();
+            renderAll();
+            showToast(`Updated al-Jazariyyah progress to ${target} / ${JAZARI_TOTAL} lines.`);
+          });
+        });
+
+        // Daily check-in (tap the active button again to clear today)
+        document.querySelectorAll(".daytype-btn").forEach((btn) => {
+          btn.addEventListener("click", () => {
+            const type = btn.getAttribute("data-daytype");
+            const key = dateKey(new Date());
+            if (state.dayLog[key] === type) {
+              delete state.dayLog[key];
+            } else {
+              state.dayLog[key] = type;
+              showToast(
+                type === "full" ? "Full day logged. Alhamdulillah." :
+                type === "min" ? "A minimum day counts. Streak kept." :
+                "Rest is part of the plan. Streak protected."
+              );
+            }
+            saveState();
+            renderCheckin();
+          });
+        });
+
+        // Departure window, checkpoint, health hold
+        document.getElementById("date-departure").addEventListener("change", (e) => {
+          if (e.target.value) {
+            state.departureDate = e.target.value;
+            saveState();
+            renderAll();
+          }
+        });
+
+        document.getElementById("date-checkpoint").addEventListener("change", (e) => {
+          if (e.target.value) {
+            state.checkpointDate = e.target.value;
+            saveState();
+            renderAll();
+          }
+        });
+
+        document.getElementById("btn-slide-year").addEventListener("click", () => {
+          state.departureDate = addYears(state.departureDate, 1);
+          state.checkpointDate = addYears(state.checkpointDate, 1);
+          Object.keys(state.phases).forEach((k) => {
+            state.phases[k] = addYears(state.phases[k], 1);
+          });
+          saveState();
+          renderAll();
+          showToast("Window slid by a year. Your lines and savings carry over.");
+        });
+
+        document.getElementById("health-hold").addEventListener("change", (e) => {
+          state.healthHold = e.target.checked;
+          saveState();
+          renderPlanControls();
+        });
+
+        document.getElementById("fund-saved").addEventListener("input", (e) => {
+          state.funding.savedSoFar = Math.max(0, Number(e.target.value) || 0);
+          saveState();
+          renderAll();
         });
 
         // Budget Preset Scenario Buttons
